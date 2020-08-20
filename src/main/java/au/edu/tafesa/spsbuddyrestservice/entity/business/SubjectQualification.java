@@ -1,7 +1,17 @@
 /*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
+ * Copyright 2020 TAFE SA
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *    http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
  */
 package au.edu.tafesa.spsbuddyrestservice.entity.business;
 
@@ -14,7 +24,6 @@ import javax.persistence.Column;
 import javax.persistence.EmbeddedId;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
-import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.MapsId;
 import javax.persistence.Table;
@@ -39,14 +48,13 @@ public class SubjectQualification implements Serializable {
     private static final long serialVersionUID = 1L;
     
     @EmbeddedId
-    protected SubjectQualificationPK subjectQualificationPK;
+    private SubjectQualificationPK subjectQualificationPK;
     
     @ManyToOne(
             fetch = FetchType.LAZY,
             cascade = {CascadeType.DETACH, CascadeType.MERGE, CascadeType.PERSIST, CascadeType.REFRESH},
             optional = false)
     @MapsId("qualCode")
-    @JoinColumn(name = "QualCode")
     @ToString.Exclude
     private Qualification qualification;
     
@@ -55,7 +63,6 @@ public class SubjectQualification implements Serializable {
             cascade = {CascadeType.DETACH, CascadeType.MERGE, CascadeType.PERSIST, CascadeType.REFRESH},
             optional = false)
     @MapsId("subjectCode")
-    @JoinColumn(name = "SubjectCode")
     @ToString.Exclude
     private Subject subject;
     
@@ -82,10 +89,7 @@ public class SubjectQualification implements Serializable {
             return false;
         }
         final SubjectQualification other = (SubjectQualification) obj;
-        if (!Objects.equals(this.subjectQualificationPK, other.subjectQualificationPK)) {
-            return false;
-        }
-        return true;
+        return Objects.equals(this.subjectQualificationPK, other.subjectQualificationPK);
     }
     
 }

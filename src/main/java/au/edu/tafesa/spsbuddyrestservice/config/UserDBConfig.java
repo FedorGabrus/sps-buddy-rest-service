@@ -18,12 +18,12 @@ package au.edu.tafesa.spsbuddyrestservice.config;
 import com.zaxxer.hikari.HikariDataSource;
 import javax.persistence.EntityManagerFactory;
 import javax.sql.DataSource;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.boot.autoconfigure.jdbc.DataSourceProperties;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.boot.orm.jpa.EntityManagerFactoryBuilder;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.context.annotation.Primary;
 import org.springframework.context.annotation.PropertySource;
 import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 import org.springframework.orm.jpa.JpaTransactionManager;
@@ -32,41 +32,39 @@ import org.springframework.transaction.PlatformTransactionManager;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
 
 /**
- * Configures business data base.
- * Used as primary data base.
- * 
+ * Configures users data base.
+ * Used for spring security and as service DB.
+ *
  * @author Fedor Gabrus
  */
 @Configuration
 @EnableTransactionManagement
 @PropertySource({"classpath:application.properties"})
 @EnableJpaRepositories(
-        basePackages = {"au.edu.tafesa.spsbuddyrestservice.repository.business"},
-        entityManagerFactoryRef = "businessEntityManagerFactory",
-        transactionManagerRef = "businessTransactionManager")
-public class BusinessDBConfig {
-    
+        basePackages = {"au.edu.tafesa.spsbuddyrestservice.repository.user"},
+        entityManagerFactoryRef = "userEntityManagerFactory",
+        transactionManagerRef = "userTransactionManager")
+public class UserDBConfig {
+
     /**
      * Binds data source props from application properties.
      *
      * @return DataSourceProperties
      */
     @Bean
-    @Primary
-    @ConfigurationProperties(prefix = "spring.datasource")
-    public DataSourceProperties businessDataSourceProperties() {
+    @ConfigurationProperties(prefix = "userdb.datasource")
+    public DataSourceProperties userDataSourceProps() {
         return new DataSourceProperties();
     }
-    
+
     /**
      * Creates data source.
      * 
-     * @param dataSourceProperties businessDataSourceProperties
+     * @param dataSourceProperties usersDataSourceProps
      * @return DataSource
      */
     @Bean
-    @Primary
-    public DataSource businessDataSource(DataSourceProperties dataSourceProperties) {
+    public DataSource userDataSource(@Qualifier("userDataSourceProps") DataSourceProperties dataSourceProperties) {
         return dataSourceProperties.initializeDataSourceBuilder().type(HikariDataSource.class).build();
     }
     
@@ -74,29 +72,28 @@ public class BusinessDBConfig {
      * Configures entity manager factory.
      * 
      * @param builder EntityManagerFactoryBuilder
-     * @param dataSource businessDataSource
+     * @param dataSource usersDataSource
      * @return LocalContainerEntityManagerFactoryBean
      */
     @Bean
-    @Primary
-    public LocalContainerEntityManagerFactoryBean businessEntityManagerFactory(EntityManagerFactoryBuilder builder,
-            DataSource dataSource) {
+    public LocalContainerEntityManagerFactoryBean userEntityManagerFactory(EntityManagerFactoryBuilder builder,
+            @Qualifier("userDataSource") DataSource dataSource) {
         return builder
                 .dataSource(dataSource)
-                .packages("au.edu.tafesa.spsbuddyrestservice.entity.business")
-                .persistenceUnit("businessPU")
+                .packages("au.edu.tafesa.spsbuddyrestservice.entity.user")
+                .persistenceUnit("userPU")
                 .build();
     }
-    
+
     /**
      * Configures transaction manager.
      * 
-     * @param entityManagerFactory businessEntityManagerFactory
+     * @param entityManagerFactory usersEntityManagerFactory
      * @return PlatformTransactionManager
      */
     @Bean
-    @Primary
-    public PlatformTransactionManager businessTransactionManager(EntityManagerFactory entityManagerFactory) {
+    public PlatformTransactionManager userTransactionManager(
+            @Qualifier("userEntityManagerFactory") EntityManagerFactory entityManagerFactory) {
         return new JpaTransactionManager(entityManagerFactory);
     }
     
