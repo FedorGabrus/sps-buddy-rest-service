@@ -16,13 +16,15 @@
 package au.edu.tafesa.spsbuddyrestservice.config;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.annotation.Bean;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
+import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.core.userdetails.UserDetailsService;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.factory.PasswordEncoderFactories;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
 /**
@@ -35,8 +37,15 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
     
     @Autowired
+    @Qualifier("appUserDetailsService")
     UserDetailsService userDetailsService;
 
+    /**
+     * Configures authentication manager.
+     * 
+     * @param auth AuthenticationManagerBuilder
+     * @throws Exception Generic exception
+     */
     @Override
     protected void configure(AuthenticationManagerBuilder auth) throws Exception {
         // Configures authentification type.
@@ -47,18 +56,22 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
     protected void configure(HttpSecurity http) throws Exception {
         // Configures url patterns access.
         http.authorizeRequests()
-                .antMatchers("/").permitAll();
+                .antMatchers("/").permitAll()
+                .antMatchers("/login").permitAll()
+                .anyRequest().authenticated()
+                // Disables sessions.
+                .and()
+                .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS);
     }
     
     /**
-     * Defines password encoding mechanism.
-     * Uses bcrypt hashing algorithm.
+     * Creates password encoder.
      * 
-     * @return password encoder.
+     * @return password encoder
      */
     @Bean
     public PasswordEncoder passwordEncoder() {
-        return new BCryptPasswordEncoder();
+        return PasswordEncoderFactories.createDelegatingPasswordEncoder();
     }
     
 }

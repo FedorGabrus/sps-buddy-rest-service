@@ -21,14 +21,27 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
 /**
- *
+ * Handles application users extraction.
+ * 
  * @author Fedor Gabrus
  */
 @Service
 public class AppUserDetailsService implements UserDetailsService {
 
+    /**
+     * Retrieves UserDetails from the the DB.
+     * 
+     * @param username
+     * @return AppUserDetails
+     * @throws UsernameNotFoundException when user not found
+     */
     @Override
-    public UserDetails loadUserByUsername(String string) throws UsernameNotFoundException {
+    public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
+        if (username == null || username.isBlank()) {
+            throw new UsernameNotFoundException("User not found");
+        }
+        
+        
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
     

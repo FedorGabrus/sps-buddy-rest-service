@@ -39,7 +39,6 @@ import org.springframework.transaction.annotation.EnableTransactionManagement;
  */
 @Configuration
 @EnableTransactionManagement
-@PropertySource({"classpath:application.properties"})
 @EnableJpaRepositories(
         basePackages = {"au.edu.tafesa.spsbuddyrestservice.repository.business"},
         entityManagerFactoryRef = "businessEntityManagerFactory",
