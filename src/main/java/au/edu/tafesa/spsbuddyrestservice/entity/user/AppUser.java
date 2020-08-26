@@ -18,6 +18,7 @@ package au.edu.tafesa.spsbuddyrestservice.entity.user;
 import java.io.Serializable;
 import java.util.List;
 import java.util.Objects;
+import java.util.stream.Collectors;
 import javax.persistence.Basic;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
@@ -27,8 +28,6 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
-import javax.persistence.NamedQueries;
-import javax.persistence.NamedQuery;
 import javax.persistence.Table;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -46,7 +45,7 @@ import lombok.ToString;
 @Setter
 @NoArgsConstructor
 @ToString
-public class AppUser implements Serializable {
+public class AppUser implements Serializable, User {
 
     private static final long serialVersionUID = 1L;
     
@@ -66,7 +65,7 @@ public class AppUser implements Serializable {
     
     @Basic(optional = false)
     @Column(name = "enabled")
-    private short enabled;
+    private boolean enabled;
     
     @ManyToMany(
             fetch = FetchType.EAGER,
@@ -97,6 +96,13 @@ public class AppUser implements Serializable {
         }
         final AppUser other = (AppUser) obj;
         return Objects.equals(this.userID, other.userID);
+    }
+
+    @Override
+    public List<String> getUserGroupNames() {
+        return userGroupList.stream()
+                .map(group -> group.getGroupName())
+                .collect(Collectors.toList());
     }
     
 }
