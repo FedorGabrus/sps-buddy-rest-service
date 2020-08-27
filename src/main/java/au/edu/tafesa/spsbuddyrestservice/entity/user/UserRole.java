@@ -30,34 +30,34 @@ import lombok.Setter;
 import lombok.ToString;
 
 /**
- * Represents usergroup table.
+ * Represents userrole table.
  * 
  * @author Fedor Gabrus
  */
 @Entity
-@Table(name = "usergroup", schema = "sps_buddy_users")
+@Table(name = "userrole", schema = "sps_buddy_users")
 @Getter
 @Setter
 @NoArgsConstructor
 @ToString
-public class UserGroup implements Serializable {
+public class UserRole implements Serializable {
 
     private static final long serialVersionUID = 1L;
     
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Basic(optional = false)
-    @Column(name = "GroupID")
-    private Integer groupID;
+    @Column(name = "RoleID")
+    private Integer roleID;
     
     @Basic(optional = false)
-    @Column(name = "GroupName")
-    private String groupName;
+    @Column(name = "RoleName")
+    private String roleName;
 
     @Override
     public int hashCode() {
         int hash = 7;
-        hash = 41 * hash + Objects.hashCode(this.groupID);
+        hash = 97 * hash + Objects.hashCode(this.roleID);
         return hash;
     }
 
@@ -72,8 +72,8 @@ public class UserGroup implements Serializable {
         if (getClass() != obj.getClass()) {
             return false;
         }
-        final UserGroup other = (UserGroup) obj;
-        return Objects.equals(this.groupID, other.groupID);
+        final UserRole other = (UserRole) obj;
+        return Objects.equals(this.roleID, other.roleID);
     }
     
 }

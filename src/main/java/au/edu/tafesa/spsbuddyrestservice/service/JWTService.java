@@ -13,20 +13,24 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package au.edu.tafesa.spsbuddyrestservice.entity.user;
+package au.edu.tafesa.spsbuddyrestservice.service;
 
 /**
- * Application user behavior.
- * 
- * @author Fedor Gabrus
+ *
+ * @author Fedor
  */
-public interface User {
+public interface JWTService {
     
     /**
-     * Gets user's role name.
+     * Generates JWS token.
      * 
-     * @return user's role name
+     * @param issuer token issuer
+     * @param subject subject
+     * @param userID user ID
+     * @param tokenLifeSpan token validity in milliseconds
+     * 
+     * @return String representing encoded JWS
      */
-    String getUserRoleName();
+    String generateToken(String issuer, String subject, String userID, long tokenLifeSpan);
     
 }

@@ -27,14 +27,6 @@ import org.springframework.data.repository.Repository;
 public interface AppUserRepository extends Repository<AppUser, String> {
     
     /**
-     * Looks up for a user by userID.
-     * 
-     * @param userID user id
-     * @return AppUser wrapped in Optional container
-     */
-    Optional<AppUser> findByUserID(String userID);
-    
-    /**
      * Looks up for a user by email.
      * 
      * @param email email to search.

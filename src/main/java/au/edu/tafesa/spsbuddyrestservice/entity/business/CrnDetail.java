@@ -58,9 +58,6 @@ public class CrnDetail implements Serializable {
             cascade = {CascadeType.DETACH, CascadeType.MERGE, CascadeType.PERSIST, CascadeType.REFRESH},
             optional = false)
     @MapsId("termDatetimePK")
-    @JoinColumns({
-            @JoinColumn(name = "TermCodeStart"),
-            @JoinColumn(name = "TermYearStart")})
     @ToString.Exclude
     private TermDatetime termDatetime;
     

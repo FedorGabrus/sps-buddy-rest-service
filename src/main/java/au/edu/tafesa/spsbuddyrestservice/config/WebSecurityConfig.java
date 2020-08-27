@@ -36,6 +36,14 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 @EnableWebSecurity
 public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
     
+    /**
+     * Stores available user roles.
+     */
+    private enum UserRole {
+        STUDENT,
+        LECTURER
+    }
+    
     @Autowired
     @Qualifier("appUserDetailsService")
     UserDetailsService userDetailsService;

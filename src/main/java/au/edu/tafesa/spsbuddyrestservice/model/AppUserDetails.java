@@ -15,114 +15,89 @@
  */
 package au.edu.tafesa.spsbuddyrestservice.model;
 
-import java.util.Collection;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
-import java.util.stream.Collectors;
+import lombok.Getter;
 import lombok.NonNull;
 import lombok.ToString;
-import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
 /**
  * Represents application principal user's details.
+ * Assumes that user can have only one role.
  * 
  * @author Fedor Gabrus
  */
+@Getter
 @ToString
 public class AppUserDetails implements UserDetails {
     
     private final String username;
     @ToString.Exclude
-    private final String passwordHash;
-    private final boolean isEnabled;
-    private final List<? extends GrantedAuthority> authorities;
+    private final String password;
+    private final boolean enabled;
+    private final List<SimpleGrantedAuthority> authorities;
     
-    public AppUserDetails(@NonNull String username, @NonNull String passwordHash,
-            boolean isEnabled, @NonNull List<String> authorities) {
+    /**
+     * Constructor.
+     * 
+     * @param username user identifier.
+     * @param password password/password hash
+     * @param enabled determines if account is active
+     * @param role user's role name
+     */
+    public AppUserDetails(@NonNull String username, @NonNull String password, boolean enabled,
+            @NonNull String role) {
         this.username = username;
-        this.passwordHash = passwordHash;
-        this.isEnabled = isEnabled;
-        this.authorities = authorities.stream()
-                .map(SimpleGrantedAuthority::new)
-                .collect(Collectors.toList());
+        this.password = password;
+        this.enabled = enabled;
+        // Creates authorities based on provided user role.
+        this.authorities = new ArrayList<>();
+        authorities.add(new SimpleGrantedAuthority(role));
     }
-
+    
     /**
-     * Getter.
+     * Determines if account expired.
      * 
-     * @return user's authorities
-     */
-    @Override
-    public Collection<? extends GrantedAuthority> getAuthorities() {
-        return authorities;
-    }
-
-    /**
-     * Getter.
+     * Not implemented.
      * 
-     * @return user's hashed password
-     */
-    @Override
-    public String getPassword() {
-        return passwordHash;
-    }
-
-    /**
-     * Getter.
-     * 
-     * @return user's username
-     */
-    @Override
-    public String getUsername() {
-        return username;
-    }
-
-    /**
-     * Checks if user's account is not expired.
-     * 
-     * @return true if user's account is enabled, false otherwise
+     * @return false if account expired, true otherwise.
      */
     @Override
     public boolean isAccountNonExpired() {
-        return isEnabled;
+        return true;
     }
 
     /**
-     * Checks if user account is not locked.
+     * Determines if account locked.
      * 
-     * @return true if user's account is enabled, false otherwise
+     * Not implemented.
+     * 
+     * @return false if account locked, true otherwise.
      */
     @Override
     public boolean isAccountNonLocked() {
-        return isEnabled;
+        return true;
     }
 
     /**
-     * Checks if user's credentials are not expired.
+     * Determines if credentials expired.
      * 
-     * @return true if user's account is enabled, false otherwise
+     * Not implemented.
+     * 
+     * @return false if credentials expired, true otherwise.
      */
     @Override
     public boolean isCredentialsNonExpired() {
-        return isEnabled;
-    }
-
-    /**
-     * Getter.
-     * 
-     * @return true if user's account is enabled, false otherwise
-     */
-    @Override
-    public boolean isEnabled() {
-        return isEnabled;
+        return true;
     }
 
     @Override
     public int hashCode() {
         int hash = 7;
-        hash = 59 * hash + Objects.hashCode(this.username);
+        hash = 97 * hash + Objects.hashCode(this.username);
         return hash;
     }
 

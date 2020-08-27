@@ -41,39 +41,26 @@ public class AppUserDetailsService implements UserDetailsService {
     
     @Value("${app.user.email.domain}")
     private String userEmailDomain;
-    
-    @Value("${app.user.id.lenght}")
-    private String userIdLenth;
 
     /**
      * Retrieves UserDetails.
-     * First searches by userID, then by email.
+     * Searches user by school email.
      * 
-     * @param username
-     * @return AppUserDetails
+     * @param username school email
+     * @return AppUserDetails retrieved user's data
      * @throws UsernameNotFoundException when user not found
      */
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-        
-        if (username == null || username.isBlank()) {
+        if (!validateUsername(username)) {
             throw new UsernameNotFoundException(usernameNotFoundExceptionText);
         }
         
-        // Removes any trailing whitespaces from the user name.
-        final String trimmedUsername = username.trim();
-        
-        // Checks username according to the pattern.
-        if (!validateUsername(trimmedUsername)) {
-            throw new UsernameNotFoundException(usernameNotFoundExceptionText);
-        }
-        
-        // Gets user by user ID/email or throws exception.
-        final AppUser user = appUserRepository.findByUserID(trimmedUsername)
-                .or(() -> appUserRepository.findByEmail(trimmedUsername))
+        // Gets user by user email or throws exception.
+        final AppUser user = appUserRepository.findByEmail(username)
                 .orElseThrow(() -> new UsernameNotFoundException(usernameNotFoundExceptionText));
         
-        return new AppUserDetails(user.getUserID(), user.getPassword(), user.isEnabled(), user.getUserGroupNames());
+        return new AppUserDetails(user.getEmail(), user.getPassword(), user.isEnabled(), user.getUserRoleName());
     }
     
     /**
@@ -88,8 +75,8 @@ public class AppUserDetailsService implements UserDetailsService {
      * @return true if username has a valid pattern, false otherwise.
      */
     private boolean validateUsername(String username) {
-        return username.matches("^\\d{" + userIdLenth + "}$")
-                || (username.matches("^\\w+(\\.\\w+)*[@]{1}\\w+(\\.\\w+)+$") && username.endsWith(userEmailDomain));
+        return (username != null) && !username.isBlank()
+                && (username.matches("^\\w+(\\.\\w+)*[@]{1}\\w+(\\.\\w+)+$") && username.endsWith(userEmailDomain));
     }
     
 }

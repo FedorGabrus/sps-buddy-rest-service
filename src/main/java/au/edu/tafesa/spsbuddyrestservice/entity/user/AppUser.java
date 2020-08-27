@@ -16,9 +16,7 @@
 package au.edu.tafesa.spsbuddyrestservice.entity.user;
 
 import java.io.Serializable;
-import java.util.List;
 import java.util.Objects;
-import java.util.stream.Collectors;
 import javax.persistence.Basic;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
@@ -26,8 +24,7 @@ import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
-import javax.persistence.JoinTable;
-import javax.persistence.ManyToMany;
+import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -35,7 +32,7 @@ import lombok.Setter;
 import lombok.ToString;
 
 /**
- * Represents appuser table.
+ * Represents appuser table
  * 
  * @author Fedor Gabrus
  */
@@ -51,10 +48,6 @@ public class AppUser implements Serializable, User {
     
     @Id
     @Basic(optional = false)
-    @Column(name = "UserID")
-    private String userID;
-    
-    @Basic(optional = false)
     @Column(name = "Email")
     private String email;
     
@@ -67,19 +60,17 @@ public class AppUser implements Serializable, User {
     @Column(name = "enabled")
     private boolean enabled;
     
-    @ManyToMany(
+    @ManyToOne(
             fetch = FetchType.EAGER,
-            cascade = CascadeType.ALL)
-    @JoinTable(
-            name = "user_usergroup",
-            joinColumns = {@JoinColumn(name = "UserID")},
-            inverseJoinColumns = {@JoinColumn(name = "GroupID")})
-    private List<UserGroup> userGroupList;
+            cascade = {CascadeType.DETACH, CascadeType.MERGE, CascadeType.PERSIST, CascadeType.REFRESH},
+            optional = false)
+    @JoinColumn(name = "RoleID")
+    private UserRole role;
 
     @Override
     public int hashCode() {
         int hash = 7;
-        hash = 79 * hash + Objects.hashCode(this.userID);
+        hash = 19 * hash + Objects.hashCode(this.email);
         return hash;
     }
 
@@ -95,14 +86,12 @@ public class AppUser implements Serializable, User {
             return false;
         }
         final AppUser other = (AppUser) obj;
-        return Objects.equals(this.userID, other.userID);
+        return Objects.equals(this.email, other.email);
     }
 
     @Override
-    public List<String> getUserGroupNames() {
-        return userGroupList.stream()
-                .map(group -> group.getGroupName())
-                .collect(Collectors.toList());
+    public String getUserRoleName() {
+        return role.getRoleName();
     }
     
 }

@@ -26,6 +26,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.ToString;
+import org.hibernate.annotations.NaturalId;
 
 /**
  * Represents lecturer table.
@@ -56,7 +57,8 @@ public class Lecturer implements Serializable {
     private String lastName;
     
     @Basic(optional = false)
-    @Column(name = "EmailAddress")
+    @Column(name = "EmailAddress", unique = true)
+    @NaturalId
     private String emailAddress;
 
     @Override
