@@ -43,14 +43,14 @@ public class AppUserDetails implements UserDetails {
     /**
      * Constructor.
      * 
-     * @param username user identifier.
+     * @param userEmail school user's email
      * @param password password/password hash
      * @param enabled determines if account is active
      * @param role user's role name
      */
-    public AppUserDetails(@NonNull String username, @NonNull String password, boolean enabled,
+    public AppUserDetails(@NonNull String userEmail, @NonNull String password, boolean enabled,
             @NonNull String role) {
-        this.username = username;
+        this.username = userEmail;
         this.password = password;
         this.enabled = enabled;
         // Creates authorities based on provided user role.

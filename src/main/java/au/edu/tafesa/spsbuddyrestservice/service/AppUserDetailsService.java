@@ -1,4 +1,4 @@
-/*
+ /*
  * Copyright 2020 TAFE SA
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -18,6 +18,7 @@ package au.edu.tafesa.spsbuddyrestservice.service;
 import au.edu.tafesa.spsbuddyrestservice.entity.user.AppUser;
 import au.edu.tafesa.spsbuddyrestservice.model.AppUserDetails;
 import au.edu.tafesa.spsbuddyrestservice.repository.user.AppUserRepository;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -26,57 +27,62 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
 /**
- * Handles application users extraction.
+ * Handles application users data.
  * 
  * @author Fedor Gabrus
  */
 @Service
+@Slf4j
 public class AppUserDetailsService implements UserDetailsService {
+    
+    // Text for UsernameNotFoundException.
+    private static final String USER_NOT_FOUND = "User not founds";
+    
+    // Email domain for username validation.
+    @Value("${app.user.email.domain}")
+    private String userEmailDomain;
     
     @Autowired
     private AppUserRepository appUserRepository;
-    
-    @Value("${app.security.exception.UsernameNotFoundException}")
-    private String usernameNotFoundExceptionText;
-    
-    @Value("${app.user.email.domain}")
-    private String userEmailDomain;
 
     /**
      * Retrieves UserDetails.
      * Searches user by school email.
      * 
-     * @param username school email
+     * @param userEmail school email
      * @return AppUserDetails retrieved user's data
      * @throws UsernameNotFoundException when user not found
      */
     @Override
-    public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-        if (!validateUsername(username)) {
-            throw new UsernameNotFoundException(usernameNotFoundExceptionText);
+    public UserDetails loadUserByUsername(String userEmail) throws UsernameNotFoundException {
+        // Validates email.
+        if (!validateUserEmail(userEmail)) {
+            log.debug("Email " + userEmail + " has invalid pattern");
+            throw new UsernameNotFoundException(USER_NOT_FOUND);
         }
         
         // Gets user by user email or throws exception.
-        final AppUser user = appUserRepository.findByEmail(username)
-                .orElseThrow(() -> new UsernameNotFoundException(usernameNotFoundExceptionText));
+        final AppUser user = appUserRepository.findByEmail(userEmail)
+                .orElseThrow(() -> {
+                    log.debug("No user with " + userEmail + " email");
+                    return new UsernameNotFoundException(USER_NOT_FOUND);
+                });
         
         return new AppUserDetails(user.getEmail(), user.getPassword(), user.isEnabled(), user.getUserRoleName());
     }
     
     /**
-     * Validates username according to the patterns.
-     * Prevents DB querying if username has a bad format.
-     * Acceptable usernames: student or lecturer IDs or school email.
+     * Validates user's email according to the patterns.
+     * Prevents DB querying if email has a bad format.
      * 
-     * Assumes that id has the same length and contains only digits.
      * Assumes that school email use only dots and underscore as the delimiter and has the same ending.
      * 
-     * @param username username to validate
-     * @return true if username has a valid pattern, false otherwise.
+     * @param userEmail userEmail to validate
+     * @return true if userEmail has a valid pattern, false otherwise.
      */
-    private boolean validateUsername(String username) {
-        return (username != null) && !username.isBlank()
-                && (username.matches("^\\w+(\\.\\w+)*[@]{1}\\w+(\\.\\w+)+$") && username.endsWith(userEmailDomain));
+    private boolean validateUserEmail(String userEmail) {
+        return (userEmail != null) && !userEmail.isBlank()
+                && (userEmail.matches("^\\w+(\\.\\w+)*[@]{1}\\w+(\\.\\w+)+$") && userEmail.endsWith(userEmailDomain));
     }
     
 }

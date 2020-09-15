@@ -18,6 +18,7 @@ package au.edu.tafesa.spsbuddyrestservice.config;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.annotation.Bean;
+import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
@@ -36,36 +37,35 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 @EnableWebSecurity
 public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
     
-    /**
-     * Stores available user roles.
-     */
-    private enum UserRole {
-        STUDENT,
-        LECTURER
-    }
-    
     @Autowired
     @Qualifier("appUserDetailsService")
-    UserDetailsService userDetailsService;
+    private UserDetailsService userDetailsService;
 
     /**
-     * Configures authentication manager.
+     * Configures authentication manager builder.
      * 
      * @param auth AuthenticationManagerBuilder
      * @throws Exception Generic exception
      */
     @Override
     protected void configure(AuthenticationManagerBuilder auth) throws Exception {
-        // Configures authentification type.
+        // Configures service to fetch application users.
         auth.userDetailsService(userDetailsService);
     }
 
+    /**
+     * Configures HTTP security.
+     * @param http
+     * @throws Exception 
+     */
     @Override
     protected void configure(HttpSecurity http) throws Exception {
-        // Configures url patterns access.
-        http.authorizeRequests()
+        // Disables csrf protection as the app is stateless.
+        http.csrf().disable()
+                // Configures url access.
+                .authorizeRequests()
                 .antMatchers("/").permitAll()
-                .antMatchers("/login").permitAll()
+                .antMatchers("/authentication/**").permitAll()
                 .anyRequest().authenticated()
                 // Disables sessions.
                 .and()
@@ -80,6 +80,20 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
     @Bean
     public PasswordEncoder passwordEncoder() {
         return PasswordEncoderFactories.createDelegatingPasswordEncoder();
+    }
+
+    /**
+     * Creates authentication manager.
+     * 
+     * Application needs this bean to be able to use @Autowired for the authentication.
+     * 
+     * @return AuthenticationManager
+     * @throws Exception 
+     */
+    @Bean
+    @Override
+    public AuthenticationManager authenticationManagerBean() throws Exception {
+        return super.authenticationManagerBean();
     }
     
 }

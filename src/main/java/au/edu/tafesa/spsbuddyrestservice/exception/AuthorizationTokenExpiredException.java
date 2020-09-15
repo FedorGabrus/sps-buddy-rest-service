@@ -13,16 +13,22 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package au.edu.tafesa.spsbuddyrestservice;
+package au.edu.tafesa.spsbuddyrestservice.exception;
 
-import org.junit.jupiter.api.Test;
-import org.springframework.boot.test.context.SpringBootTest;
+/**
+ * AuthorizationTokenExpiredException throws when provided authorization token expired.
+ * 
+ * @author Fedor Gabrus
+ */
+public class AuthorizationTokenExpiredException extends RuntimeException {
+    
+    private static final long serialVersionUID = 1L;
 
-@SpringBootTest
-class SpsBuddyRestServiceApplicationTests {
-
-	@Test
-	void contextLoads() {
-	}
-
+    /**
+     * Constructor.
+     */
+    public AuthorizationTokenExpiredException() {
+        super("Authorization token expired");
+    }
+    
 }

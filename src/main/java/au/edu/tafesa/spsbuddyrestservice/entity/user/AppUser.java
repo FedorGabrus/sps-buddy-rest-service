@@ -25,6 +25,8 @@ import javax.persistence.FetchType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
+import javax.persistence.MapsId;
+import javax.persistence.OneToOne;
 import javax.persistence.Table;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -32,7 +34,7 @@ import lombok.Setter;
 import lombok.ToString;
 
 /**
- * Represents appuser table
+ * Represents appuser table.
  * 
  * @author Fedor Gabrus
  */
@@ -57,20 +59,27 @@ public class AppUser implements Serializable, User {
     private String password;
     
     @Basic(optional = false)
-    @Column(name = "enabled")
+    @Column(name = "Enabled")
     private boolean enabled;
     
     @ManyToOne(
+            optional = false,
             fetch = FetchType.EAGER,
-            cascade = {CascadeType.DETACH, CascadeType.MERGE, CascadeType.PERSIST, CascadeType.REFRESH},
-            optional = false)
+            cascade = {CascadeType.DETACH, CascadeType.MERGE, CascadeType.PERSIST, CascadeType.REFRESH})
     @JoinColumn(name = "RoleID")
     private UserRole role;
+    
+    @OneToOne(
+            optional = true,
+            fetch = FetchType.EAGER,
+            cascade = CascadeType.ALL)
+    @MapsId
+    private AuthorizationToken token;
 
     @Override
     public int hashCode() {
         int hash = 7;
-        hash = 19 * hash + Objects.hashCode(this.email);
+        hash = 67 * hash + Objects.hashCode(this.email);
         return hash;
     }
 

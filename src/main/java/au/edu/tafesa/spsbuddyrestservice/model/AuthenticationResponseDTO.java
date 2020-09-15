@@ -13,24 +13,31 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package au.edu.tafesa.spsbuddyrestservice.service;
+package au.edu.tafesa.spsbuddyrestservice.model;
+
+import java.io.Serializable;
+import lombok.Builder;
+import lombok.Data;
+import lombok.NonNull;
 
 /**
- *
- * @author Fedor
+ * DTO used to transfer user data after successful authentication.
+ * 
+ * @author Fedor Gabrus
  */
-public interface JWTService {
+@Data
+@Builder
+public class AuthenticationResponseDTO implements Serializable {
     
-    /**
-     * Generates JWS token.
-     * 
-     * @param issuer token issuer
-     * @param subject subject
-     * @param userID user ID
-     * @param tokenLifeSpan token validity in milliseconds
-     * 
-     * @return String representing encoded JWS
-     */
-    String generateToken(String issuer, String subject, String userID, long tokenLifeSpan);
+    private static final long serialVersionUID = 1L;
+    
+    @NonNull
+    private final String jwt;
+    @NonNull
+    private final String role;
+    @NonNull
+    private final String id;
+    @NonNull
+    private final String firstName;
     
 }

@@ -16,12 +16,11 @@
 package au.edu.tafesa.spsbuddyrestservice.entity.user;
 
 import java.io.Serializable;
+import java.time.ZonedDateTime;
 import java.util.Objects;
 import javax.persistence.Basic;
 import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Table;
 import lombok.Getter;
@@ -30,34 +29,37 @@ import lombok.Setter;
 import lombok.ToString;
 
 /**
- * Represents userrole table.
+ * Represents authorizationtoken table.
  * 
  * @author Fedor Gabrus
  */
 @Entity
-@Table(name = "userrole", schema = "sps_buddy_users")
+@Table(name = "authorizationtoken", schema = "sps_buddy_users")
 @Getter
 @Setter
 @NoArgsConstructor
 @ToString
-public class UserRole implements Serializable {
+public class AuthorizationToken implements Serializable {
 
     private static final long serialVersionUID = 1L;
     
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Basic(optional = false)
-    @Column(name = "RoleID")
-    private Integer roleID;
+    @Column(name = "UserEmail")
+    private String userEmail;
     
     @Basic(optional = false)
-    @Column(name = "RoleName", unique = true)
-    private String roleName;
+    @Column(name = "TokenUID")
+    private String tokenUID;
+    
+    @Basic(optional = false)
+    @Column(name = "IssuedAt")
+    private ZonedDateTime issueDateTime;
 
     @Override
     public int hashCode() {
-        int hash = 7;
-        hash = 43 * hash + Objects.hashCode(this.roleID);
+        int hash = 3;
+        hash = 67 * hash + Objects.hashCode(this.userEmail);
         return hash;
     }
 
@@ -72,8 +74,8 @@ public class UserRole implements Serializable {
         if (getClass() != obj.getClass()) {
             return false;
         }
-        final UserRole other = (UserRole) obj;
-        return Objects.equals(this.roleID, other.roleID);
+        final AuthorizationToken other = (AuthorizationToken) obj;
+        return Objects.equals(this.userEmail, other.userEmail);
     }
     
 }
