@@ -13,31 +13,23 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package au.edu.tafesa.spsbuddyrestservice.config;
+package au.edu.tafesa.spsbuddyrestservice.model;
 
-import java.time.ZoneId;
-import java.util.TimeZone;
-import javax.annotation.PostConstruct;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.context.annotation.Configuration;
+import java.time.ZonedDateTime;
+import lombok.Data;
+import lombok.NonNull;
 
 /**
- * Configures default application time zone.
+ * Represents user's authorization token data.
  * 
  * @author Fedor Gabrus
  */
-@Configuration
-public class DateTimeConfig {
+@Data
+public class UserToken {
     
-    @Value("${app.internal.timezone}")
-    private String applicationTimeZoneId;
-    
-    /**
-     * Sets default application time zone.
-     */
-    @PostConstruct
-    void init() {
-        TimeZone.setDefault(TimeZone.getTimeZone(ZoneId.of(applicationTimeZoneId)));
-    }
+    @NonNull
+    private final String uid;
+    @NonNull
+    private final ZonedDateTime issuedAt;
     
 }

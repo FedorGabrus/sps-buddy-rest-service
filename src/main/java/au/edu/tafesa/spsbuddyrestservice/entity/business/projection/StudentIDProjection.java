@@ -13,31 +13,28 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package au.edu.tafesa.spsbuddyrestservice.model;
-
-import java.io.Serializable;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NonNull;
+package au.edu.tafesa.spsbuddyrestservice.entity.business.projection;
 
 /**
- * DTO used to transfer user data after successful authentication.
+ * Projection to retrieve only student's ID from student table.
  * 
  * @author Fedor Gabrus
  */
-@Data
-@Builder
-public class AuthenticationResponseDTO implements Serializable {
+public interface StudentIDProjection {
     
-    private static final long serialVersionUID = 1L;
+    /**
+     * ID getter from Student entity.
+     * 
+     * @return student's ID
+     */
+    String getStudentID();
     
-    @NonNull
-    private final String jwt;
-    @NonNull
-    private final String role;
-    @NonNull
-    private final String id;
-    @NonNull
-    private final String firstName;
+    /**
+     * ID setter from Student entity.
+     * Used mostly in tests.
+     * 
+     * @param studentID new student's ID
+     */
+    void setStudentID(String studentID);
     
 }

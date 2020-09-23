@@ -15,13 +15,15 @@
  */
 package au.edu.tafesa.spsbuddyrestservice.restapi.v1.controller;
 
-import au.edu.tafesa.spsbuddyrestservice.model.AuthenticationResponseDTO;
+import au.edu.tafesa.spsbuddyrestservice.model.AuthenticationResponse;
 import au.edu.tafesa.spsbuddyrestservice.model.EmailPasswordDTO;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.hateoas.EntityModel;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -35,7 +37,8 @@ import org.springframework.web.bind.annotation.RestController;
  * @version 1.0.0
  */
 @RestController
-@RequestMapping("/api/v1/authentication")
+@RequestMapping("/api/v1")
+@Slf4j
 public class AuthenticationController {
     
     // Text for bad credentials.
@@ -44,18 +47,20 @@ public class AuthenticationController {
     @Autowired
     private AuthenticationManager authenticationManager;
     
-    @PostMapping("/login")
-    public EntityModel<AuthenticationResponseDTO> authenticateWebApp(
+    @PostMapping("/authenticate")
+    public EntityModel<AuthenticationResponse> authenticateWebApp(
             @RequestBody EmailPasswordDTO emailPasswordDTO) throws BadCredentialsException {
-        
         try {
-            authenticationManager.authenticate(
+            final Authentication authorisedUser = authenticationManager.authenticate(
                 new UsernamePasswordAuthenticationToken(emailPasswordDTO.getEmail(), emailPasswordDTO.getPassword()));
+            log.debug("User authenticated.");
         }
         catch (AuthenticationException e) {
             // Throws exception if authentication failes.
+            log.debug(BAD_CREDENTIALS);
             throw new BadCredentialsException(BAD_CREDENTIALS);
         }
+        
         // TODO
         return null;
     }

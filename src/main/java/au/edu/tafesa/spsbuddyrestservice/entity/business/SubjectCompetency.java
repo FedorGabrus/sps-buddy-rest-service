@@ -36,7 +36,7 @@ import lombok.ToString;
  * @author Fedor Gabrus
  */
 @Entity
-@Table(name = "subject_competency", schema = "admin_it_studies_dev")
+@Table(name = "subject_competency")
 @Getter
 @Setter
 @NoArgsConstructor

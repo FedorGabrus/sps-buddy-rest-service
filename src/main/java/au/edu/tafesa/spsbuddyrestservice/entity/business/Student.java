@@ -34,7 +34,7 @@ import org.hibernate.annotations.NaturalId;
  * @author Fedor Gabrus
  */
 @Entity
-@Table(name = "student", schema = "admin_it_studies_dev")
+@Table(name = "student")
 @Getter
 @Setter
 @NoArgsConstructor

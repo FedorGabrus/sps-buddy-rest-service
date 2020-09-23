@@ -38,7 +38,7 @@ import lombok.ToString;
  * @author Fedor Gabrus
  */
 @Entity
-@Table(name = "crn_session_timetable", schema = "admin_it_studies_dev")
+@Table(name = "crn_session_timetable")
 @Getter
 @Setter
 @NoArgsConstructor

@@ -40,7 +40,7 @@ public class JwsConfig {
      */
     @Bean
     public SecretKey jwsSecretKeyBean() {
-        return Keys.hmacShaKeyFor(Decoders.BASE64.decode(signatureKey));
+        return Keys.hmacShaKeyFor(Decoders.BASE64URL.decode(signatureKey));
     }
     
 }

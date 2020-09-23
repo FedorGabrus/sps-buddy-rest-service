@@ -15,16 +15,27 @@
  */
 package au.edu.tafesa.spsbuddyrestservice.model;
 
+import java.time.ZonedDateTime;
+import static org.assertj.core.api.Assertions.*;
+import org.junit.jupiter.api.Test;
+
 /**
- * Stores available user roles.
- * When these values changed corresponding front-end data should be altered as well.
- * 
- * Should contain similar values as the DB table that represents user's roles.
- * Example: ROLE_STUDENT in DB should have corresponding STUDENT constant in this enum.
+ * Unit test for UserToken model.
  * 
  * @author Fedor Gabrus
  */
-public enum UserRole {
-    STUDENT,
-    LECTURER
+public class UserTokenTest {
+    
+    /**
+     * Test for constructor.
+     * Should not accept nulls.
+     */
+    @Test
+    void testConstructor() {
+        assertThatCode(() -> new UserToken("uid", ZonedDateTime.now())).doesNotThrowAnyException();
+        assertThat(new UserToken("uid", ZonedDateTime.now())).isNotNull();
+        assertThatNullPointerException().isThrownBy(() -> new UserToken(null, ZonedDateTime.now()));
+        assertThatNullPointerException().isThrownBy(() -> new UserToken("uid", null));
+    }
+    
 }

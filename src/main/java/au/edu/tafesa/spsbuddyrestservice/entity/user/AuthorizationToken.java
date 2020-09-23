@@ -19,9 +19,13 @@ import java.io.Serializable;
 import java.time.ZonedDateTime;
 import java.util.Objects;
 import javax.persistence.Basic;
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.Id;
+import javax.persistence.MapsId;
+import javax.persistence.OneToOne;
 import javax.persistence.Table;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -34,7 +38,7 @@ import lombok.ToString;
  * @author Fedor Gabrus
  */
 @Entity
-@Table(name = "authorizationtoken", schema = "sps_buddy_users")
+@Table(name = "authorizationtoken")
 @Getter
 @Setter
 @NoArgsConstructor
@@ -55,6 +59,13 @@ public class AuthorizationToken implements Serializable {
     @Basic(optional = false)
     @Column(name = "IssuedAt")
     private ZonedDateTime issueDateTime;
+    
+    @OneToOne(
+            fetch = FetchType.LAZY,
+            cascade = {CascadeType.DETACH, CascadeType.MERGE, CascadeType.PERSIST, CascadeType.REFRESH})
+    @MapsId
+    @ToString.Exclude
+    private AppUser user;
 
     @Override
     public int hashCode() {

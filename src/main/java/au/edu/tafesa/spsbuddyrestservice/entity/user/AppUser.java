@@ -25,7 +25,6 @@ import javax.persistence.FetchType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
-import javax.persistence.MapsId;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
 import lombok.Getter;
@@ -39,12 +38,12 @@ import lombok.ToString;
  * @author Fedor Gabrus
  */
 @Entity
-@Table(name = "appuser", schema = "sps_buddy_users")
+@Table(name = "appuser")
 @Getter
 @Setter
 @NoArgsConstructor
 @ToString
-public class AppUser implements Serializable, User {
+public class AppUser implements Serializable {
 
     private static final long serialVersionUID = 1L;
     
@@ -73,7 +72,7 @@ public class AppUser implements Serializable, User {
             optional = true,
             fetch = FetchType.EAGER,
             cascade = CascadeType.ALL)
-    @MapsId
+    @JoinColumn(name = "Email", insertable = false, updatable = false)
     private AuthorizationToken token;
 
     @Override
@@ -96,11 +95,6 @@ public class AppUser implements Serializable, User {
         }
         final AppUser other = (AppUser) obj;
         return Objects.equals(this.email, other.email);
-    }
-
-    @Override
-    public String getUserRoleName() {
-        return role.getRoleName();
     }
     
 }

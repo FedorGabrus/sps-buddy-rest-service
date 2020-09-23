@@ -15,12 +15,17 @@
  */
 package au.edu.tafesa.spsbuddyrestservice.model;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.io.Serializable;
+import java.util.Arrays;
+import java.util.Collection;
 import java.util.Objects;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NonNull;
+import lombok.Setter;
 import lombok.ToString;
+import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
@@ -31,39 +36,50 @@ import org.springframework.security.core.userdetails.UserDetails;
  * @author Fedor Gabrus
  */
 @Getter
+@Setter
 @ToString
-public class AppUserDetails implements UserDetails {
+@Builder
+public final class User implements UserDetails, Serializable {
     
-    private final String username;
+    private static final long serialVersionUID = 1L;
+    
+    // Either student or lecturer id.
+    private final String userId;
+    
+    @NonNull
+    private final String email;
+    
+    @NonNull
     @ToString.Exclude
     private final String password;
+    
+    // Setermines whether account is active.
     private final boolean enabled;
-    private final List<SimpleGrantedAuthority> authorities;
     
-    /**
-     * Constructor.
-     * 
-     * @param userEmail school user's email
-     * @param password password/password hash
-     * @param enabled determines if account is active
-     * @param role user's role name
-     */
-    public AppUserDetails(@NonNull String userEmail, @NonNull String password, boolean enabled,
-            @NonNull String role) {
-        this.username = userEmail;
-        this.password = password;
-        this.enabled = enabled;
-        // Creates authorities based on provided user role.
-        this.authorities = new ArrayList<>();
-        authorities.add(new SimpleGrantedAuthority(role));
+    @NonNull
+    private final UserAuthority role;
+    
+    private UserToken authToken;
+
+    @Override
+    public Collection<? extends GrantedAuthority> getAuthorities() {
+        return Arrays.asList(new SimpleGrantedAuthority(role.toString()));
     }
-    
+
     /**
-     * Determines if account expired.
+     * Obtains username. Application uses emails as user identifiers.
      * 
+     * @return user's email
+     */
+    @Override
+    public String getUsername() {
+        return email;
+    }
+
+    /**
      * Not implemented.
      * 
-     * @return false if account expired, true otherwise.
+     * @return
      */
     @Override
     public boolean isAccountNonExpired() {
@@ -71,11 +87,9 @@ public class AppUserDetails implements UserDetails {
     }
 
     /**
-     * Determines if account locked.
-     * 
      * Not implemented.
      * 
-     * @return false if account locked, true otherwise.
+     * @return 
      */
     @Override
     public boolean isAccountNonLocked() {
@@ -83,11 +97,9 @@ public class AppUserDetails implements UserDetails {
     }
 
     /**
-     * Determines if credentials expired.
-     * 
      * Not implemented.
      * 
-     * @return false if credentials expired, true otherwise.
+     * @return 
      */
     @Override
     public boolean isCredentialsNonExpired() {
@@ -97,7 +109,7 @@ public class AppUserDetails implements UserDetails {
     @Override
     public int hashCode() {
         int hash = 7;
-        hash = 97 * hash + Objects.hashCode(this.username);
+        hash = 97 * hash + Objects.hashCode(this.email);
         return hash;
     }
 
@@ -112,8 +124,8 @@ public class AppUserDetails implements UserDetails {
         if (getClass() != obj.getClass()) {
             return false;
         }
-        final AppUserDetails other = (AppUserDetails) obj;
-        return Objects.equals(this.username, other.username);
+        final User other = (User) obj;
+        return Objects.equals(this.email, other.email);
     }
     
 }

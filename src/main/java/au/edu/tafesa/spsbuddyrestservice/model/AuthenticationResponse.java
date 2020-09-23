@@ -13,20 +13,31 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package au.edu.tafesa.spsbuddyrestservice.entity.user;
+package au.edu.tafesa.spsbuddyrestservice.model;
+
+import java.io.Serializable;
+import lombok.Builder;
+import lombok.Data;
+import lombok.NonNull;
 
 /**
- * Application user behavior.
+ * DTO used to transfer user data after successful authentication.
  * 
  * @author Fedor Gabrus
  */
-public interface User {
+@Data
+@Builder
+public class AuthenticationResponse implements Serializable {
     
-    /**
-     * Gets user's role name.
-     * 
-     * @return user's role name
-     */
-    String getUserRoleName();
+    private static final long serialVersionUID = 1L;
+    
+    @NonNull
+    private final String jwt;
+    @NonNull
+    private final String role;
+    @NonNull
+    private final String id;
+    @NonNull
+    private final String firstName;
     
 }

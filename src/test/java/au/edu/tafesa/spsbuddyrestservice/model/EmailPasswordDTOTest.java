@@ -15,22 +15,27 @@
  */
 package au.edu.tafesa.spsbuddyrestservice.model;
 
-import java.time.ZonedDateTime;
+import static org.assertj.core.api.Assertions.*;
+import org.junit.jupiter.api.Test;
+
 
 /**
- * JwsPayload describes class that represents jjwt token payload.
+ * Unit test for EmailPasswordDTO
  * 
  * @author Fedor Gabrus
  */
-public interface JwsPayload {
+public class EmailPasswordDTOTest {
     
     /**
-     * Allows to compare dates after conversion from legacy Date class.
-     * Acceptable imprecision is less than 1 second.
-     * 
-     * @param dateTime date time to check equality with
-     * @return true if date and time almost equal, false otherwise
+     * Tests constructor.
      */
-    boolean isAlmostEqualToIssueDate(ZonedDateTime dateTime);
+    @Test
+    void testConstructor() {
+        assertThatCode(() -> new EmailPasswordDTO("email", "pass")).doesNotThrowAnyException();
+        assertThat(new EmailPasswordDTO("email", "pass")).isNotNull();
+        assertThatNullPointerException().isThrownBy(() -> new EmailPasswordDTO(null, null));
+        assertThatNullPointerException().isThrownBy(() -> new EmailPasswordDTO(null, "pass"));
+        assertThatNullPointerException().isThrownBy(() -> new EmailPasswordDTO("email", null));
+    }
     
 }

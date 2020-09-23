@@ -15,29 +15,30 @@
  */
 package au.edu.tafesa.spsbuddyrestservice.config;
 
-import java.time.ZoneId;
-import java.util.TimeZone;
-import javax.annotation.PostConstruct;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.context.annotation.Configuration;
+import javax.crypto.SecretKey;
+import static org.assertj.core.api.Assertions.*;
+import org.junit.jupiter.api.Test;
+import org.springframework.test.util.ReflectionTestUtils;
+
 
 /**
- * Configures default application time zone.
+ * JwsConfig Unit test
  * 
  * @author Fedor Gabrus
  */
-@Configuration
-public class DateTimeConfig {
-    
-    @Value("${app.internal.timezone}")
-    private String applicationTimeZoneId;
-    
+public class JwsConfigTest {
+
     /**
-     * Sets default application time zone.
+     * Test of jwsSecretKeyBean method, of class JwsConfig.
      */
-    @PostConstruct
-    void init() {
-        TimeZone.setDefault(TimeZone.getTimeZone(ZoneId.of(applicationTimeZoneId)));
+    @Test
+    public void testJwsSecretKeyBean() {
+        var instance = new JwsConfig();
+        ReflectionTestUtils.setField(instance, "signatureKey", "Zkq9LSXFOpxeh7_3Ev94ag_9Gqls5WsFCrMAgMPuKmw");
+        
+        assertThat(instance.jwsSecretKeyBean()).as("Secret key created")
+                .isNotNull()
+                .isInstanceOf(SecretKey.class);
     }
     
 }

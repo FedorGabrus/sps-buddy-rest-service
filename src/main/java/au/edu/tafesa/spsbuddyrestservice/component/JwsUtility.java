@@ -16,16 +16,19 @@
 package au.edu.tafesa.spsbuddyrestservice.component;
 
 import au.edu.tafesa.spsbuddyrestservice.exception.AuthorizationTokenExpiredException;
-import au.edu.tafesa.spsbuddyrestservice.model.JwsPayload;
+import au.edu.tafesa.spsbuddyrestservice.model.JwsPayloadImpl;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.JwtException;
 import io.jsonwebtoken.Jwts;
+import java.time.ZoneId;
 import java.time.ZonedDateTime;
+import java.time.temporal.ChronoUnit;
 import java.util.Date;
 import javax.crypto.SecretKey;
 import lombok.NonNull;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
@@ -42,18 +45,16 @@ public class JwsUtility implements Jws {
     private long tokenLifeSpan;
     
     @Autowired
+    @Qualifier("jwsSecretKeyBean")
     private SecretKey jwsSecretKey;
-    
-    @Autowired
-    private DateTime appDateTime;
 
     /**
      * Generates a new token encoded in BASE64.
      * 
-     * @param email email of the user, used for the identification
-     * @param tokenUid token UID
-     * @param issuedAt date and time when token was issued
-     * @return JWS encoded in BASE64
+     * @param email email of the user, used for the identification.
+     * @param tokenUid token UID.
+     * @param issuedAt date and time when token was issued.
+     * @return encoded JWS
      */
     @Override
     public String createEncodedJws(@NonNull String email, @NonNull String tokenUid, @NonNull ZonedDateTime issuedAt) {
@@ -62,8 +63,8 @@ public class JwsUtility implements Jws {
                 .setAudience(email)
                 // UID to validate token.
                 .setId(tokenUid)
-                // Issue date used for later validation. 
-                .setIssuedAt(Date.from(issuedAt.toInstant()))
+                // Issue date used for later validation.
+                .setIssuedAt(Date.from(issuedAt.toInstant().truncatedTo(ChronoUnit.SECONDS)))
                 .signWith(jwsSecretKey)
                 .compact();
     }
@@ -71,22 +72,22 @@ public class JwsUtility implements Jws {
     /**
      * Verifies token signature and obtains its payload.
      * 
-     * @param token BASE64 encoded token
-     * @return token's payload
+     * @param token encoded token
+     * @return token's payload.
      * @throws JwtException throws when signature verification fails or token has improper format
      * @throws AuthorizationTokenExpiredException throws when token expired
      */
     @Override
-    public JwsPayload verifySignatureAndGetPayload(@NonNull String token)
+    public JwsPayloadImpl verifySignatureAndGetPayload(@NonNull String token)
             throws JwtException, AuthorizationTokenExpiredException {
         // parseClaimsJws() throws JwtException when token has invalid signature.
         final Claims claims = Jwts.parserBuilder().setSigningKey(jwsSecretKey).build().parseClaimsJws(token).getBody();
         try {
-            // JwsPayload constructor throws NullPointerException when any provided aurgument is null.
-            final var tokenPayload = new JwsPayload(
+            // JwsPayloadImpl constructor throws NullPointerException when any provided aurgument is null.
+            final var tokenPayload = new JwsPayloadImpl(
                     claims.getAudience(),
                     claims.getId(),
-                    appDateTime.ofInstant(claims.getIssuedAt().toInstant()));
+                    ZonedDateTime.ofInstant(claims.getIssuedAt().toInstant(), ZoneId.systemDefault()));
             
             // Validates expiration date.
             if (isTokenExpired(tokenPayload.getIssuedAt())) {
@@ -110,7 +111,7 @@ public class JwsUtility implements Jws {
      * @return true if token expired, false otherwise
      */
     private boolean isTokenExpired(@NonNull ZonedDateTime tokenIssuedAt) {
-        return tokenIssuedAt.plusMinutes(tokenLifeSpan).isBefore(appDateTime.now());
+        return tokenIssuedAt.plusMinutes(tokenLifeSpan).isBefore(ZonedDateTime.now());
     }
     
 }

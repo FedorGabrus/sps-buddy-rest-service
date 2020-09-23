@@ -15,11 +15,14 @@
  */
 package au.edu.tafesa.spsbuddyrestservice.entity.user;
 
+import au.edu.tafesa.spsbuddyrestservice.model.UserAuthority;
 import java.io.Serializable;
 import java.util.Objects;
 import javax.persistence.Basic;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -35,7 +38,7 @@ import lombok.ToString;
  * @author Fedor Gabrus
  */
 @Entity
-@Table(name = "userrole", schema = "sps_buddy_users")
+@Table(name = "userrole")
 @Getter
 @Setter
 @NoArgsConstructor
@@ -50,9 +53,9 @@ public class UserRole implements Serializable {
     @Column(name = "RoleID")
     private Integer roleID;
     
-    @Basic(optional = false)
+    @Enumerated(EnumType.STRING)
     @Column(name = "RoleName", unique = true)
-    private String roleName;
+    private UserAuthority roleType;
 
     @Override
     public int hashCode() {

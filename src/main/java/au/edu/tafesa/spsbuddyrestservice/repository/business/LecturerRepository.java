@@ -13,31 +13,26 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package au.edu.tafesa.spsbuddyrestservice.config;
+package au.edu.tafesa.spsbuddyrestservice.repository.business;
 
-import java.time.ZoneId;
-import java.util.TimeZone;
-import javax.annotation.PostConstruct;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.context.annotation.Configuration;
+import au.edu.tafesa.spsbuddyrestservice.entity.business.Lecturer;
+import au.edu.tafesa.spsbuddyrestservice.entity.business.projection.LecturerIDProjection;
+import java.util.Optional;
+import org.springframework.data.repository.Repository;
 
 /**
- * Configures default application time zone.
+ * Manages Lecturer entity.
  * 
  * @author Fedor Gabrus
  */
-@Configuration
-public class DateTimeConfig {
-    
-    @Value("${app.internal.timezone}")
-    private String applicationTimeZoneId;
+public interface LecturerRepository extends Repository<Lecturer, String> {
     
     /**
-     * Sets default application time zone.
+     * Retrieves lecturer's ID by email.
+     * 
+     * @param lecturerEmail email to search
+     * @return lecturer's ID
      */
-    @PostConstruct
-    void init() {
-        TimeZone.setDefault(TimeZone.getTimeZone(ZoneId.of(applicationTimeZoneId)));
-    }
+    Optional<LecturerIDProjection> findByEmailAddress(String lecturerEmail);
     
 }

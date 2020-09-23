@@ -15,22 +15,15 @@
  */
 package au.edu.tafesa.spsbuddyrestservice.model;
 
-import java.time.ZonedDateTime;
-
 /**
- * JwsPayload describes class that represents jjwt token payload.
+ * Stores available user authorities.
+ * When these values changed corresponding front-end data should be altered as well.
+ * 
+ * Should contain same values as the DB table that represents user's roles.
  * 
  * @author Fedor Gabrus
  */
-public interface JwsPayload {
-    
-    /**
-     * Allows to compare dates after conversion from legacy Date class.
-     * Acceptable imprecision is less than 1 second.
-     * 
-     * @param dateTime date time to check equality with
-     * @return true if date and time almost equal, false otherwise
-     */
-    boolean isAlmostEqualToIssueDate(ZonedDateTime dateTime);
-    
+public enum UserAuthority {
+    ROLE_STUDENT,
+    ROLE_LECTURER
 }

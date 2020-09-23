@@ -13,32 +13,28 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package au.edu.tafesa.spsbuddyrestservice.component;
-
-import java.time.Instant;
-import java.time.ZonedDateTime;
+package au.edu.tafesa.spsbuddyrestservice.entity.business.projection;
 
 /**
- * DateTime describes class that provides proper date and time depending on application
- * time zone.
+ * Projection to retrieve only lecturer's ID from lecturer table.
  * 
- * @author Fedor Gabrus Gabrus
+ * @author Fedor Gabrus
  */
-public interface DateTime {
+public interface LecturerIDProjection {
     
     /**
-     * Obtains date and time for the application time zone.
+     * ID getter from Lecturer entity.
      * 
-     * @return ZonedDateTime for time zone specified in application properties.
+     * @return lecturer's ID
      */
-    ZonedDateTime now();
+    String getLecturerID();
     
     /**
-     * Obtains application zoned date time of Instant.
+     * ID setter from Lecturer entity.
+     * Used mostly in tests.
      * 
-     * @param instant the instant to create date time from
-     * @return application zoned date time
+     * @param lecturerID lecturer's id
      */
-    ZonedDateTime ofInstant(Instant instant);
+    void setLecturerID(String lecturerID);
     
 }

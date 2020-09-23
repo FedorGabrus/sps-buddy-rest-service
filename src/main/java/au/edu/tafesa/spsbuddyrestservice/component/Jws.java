@@ -16,9 +16,8 @@
 package au.edu.tafesa.spsbuddyrestservice.component;
 
 import au.edu.tafesa.spsbuddyrestservice.exception.AuthorizationTokenExpiredException;
-import au.edu.tafesa.spsbuddyrestservice.model.JwsPayload;
+import au.edu.tafesa.spsbuddyrestservice.model.JwsPayloadImpl;
 import io.jsonwebtoken.JwtException;
-import io.jsonwebtoken.MissingClaimException;
 import java.time.ZonedDateTime;
 
 /**
@@ -47,6 +46,6 @@ public interface Jws {
      * @throws JwtException throws when signature verification fails or token has improper format
      * @throws AuthorizationTokenExpiredException throws when token expired
      */
-    JwsPayload verifySignatureAndGetPayload(String token) throws JwtException, AuthorizationTokenExpiredException;
+    JwsPayloadImpl verifySignatureAndGetPayload(String token) throws JwtException, AuthorizationTokenExpiredException;
     
 }

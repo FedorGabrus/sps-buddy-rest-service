@@ -65,7 +65,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                 // Configures url access.
                 .authorizeRequests()
                 .antMatchers("/").permitAll()
-                .antMatchers("/authentication/**").permitAll()
+                .antMatchers("/api/v1/authenticate").permitAll()
                 .anyRequest().authenticated()
                 // Disables sessions.
                 .and()
