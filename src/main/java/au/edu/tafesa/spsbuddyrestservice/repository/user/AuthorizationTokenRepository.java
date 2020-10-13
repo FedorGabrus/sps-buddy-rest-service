@@ -13,25 +13,16 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package au.edu.tafesa.spsbuddyrestservice.model;
+package au.edu.tafesa.spsbuddyrestservice.repository.user;
 
-import java.io.Serializable;
-import lombok.Data;
-import lombok.NonNull;
+import au.edu.tafesa.spsbuddyrestservice.entity.user.AuthorizationToken;
+import org.springframework.data.repository.CrudRepository;
 
 /**
- * DTO used to capture user's email and password.
+ * Repository for AuthorizationToken entity.
  * 
  * @author Fedor Gabrus
  */
-@Data
-public class EmailPasswordDTO implements Serializable {
-    
-    private static final long serialVersionUID = 1L;
-    
-    @NonNull
-    private final String email;
-    @NonNull
-    private final String password;
+public interface AuthorizationTokenRepository extends CrudRepository<AuthorizationToken, String>{
     
 }

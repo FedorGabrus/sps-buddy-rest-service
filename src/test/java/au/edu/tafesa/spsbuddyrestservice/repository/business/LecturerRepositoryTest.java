@@ -17,6 +17,8 @@ package au.edu.tafesa.spsbuddyrestservice.repository.business;
 
 import au.edu.tafesa.spsbuddyrestservice.entity.business.Lecturer;
 import static org.assertj.core.api.Assertions.*;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -40,31 +42,39 @@ public class LecturerRepositoryTest {
     @Autowired
     private LecturerRepository repository;
 
-    /**
-     * Test of findByEmailAddress method, of class LecturerRepository.
-     */
-    @Test
-    public void testFindByEmailAddress() {
-        // Set up test.
-        final String lecturerEmail = "test@email.com";
-        final String expectedID = "lecturerID";
-        final var lecturer = new Lecturer();
-        lecturer.setLecturerID(expectedID);
-        lecturer.setEmailAddress(lecturerEmail);
+    private Lecturer lecturer;
+    
+    @BeforeEach
+    void init() {
+        lecturer = new Lecturer();
+        lecturer.setEmailAddress("email");
         lecturer.setFirstName("John");
         lecturer.setLastName("Doe");
-        entityManager.persist(lecturer);
+        lecturer.setLecturerID("id");
         
-        // Tests.
-        assertThatCode(() -> repository.findByEmailAddress(lecturerEmail))
-                .as("Doesn't throw exception")
-                .doesNotThrowAnyException();
-        
-        assertThat(repository.findByEmailAddress(lecturerEmail).get().getLecturerID())
+        entityManager.persistAndFlush(lecturer);
+    }
+    
+    @AfterEach
+    void cleanUp() {
+        if (lecturer != null) {
+            entityManager.remove(lecturer);
+            lecturer = null;
+            
+            entityManager.flush();
+        }
+    }
+    
+    /**
+     * Test of findByEmailAddressIs method, of class LecturerRepository.
+     */
+    @Test
+    void testFindByEmailAddressIs() {
+        assertThat(repository.findByEmailAddressIs(lecturer.getEmailAddress()).get().getLecturerID())
                 .as("Obtains expected lecturer's ID")
-                .isEqualTo(expectedID);
+                .isEqualTo(lecturer.getLecturerID());
         
-        assertThat(repository.findByEmailAddress("No such email"))
+        assertThat(repository.findByEmailAddressIs("No such email"))
                 .as("Returns empty optional")
                 .isEmpty();
     }

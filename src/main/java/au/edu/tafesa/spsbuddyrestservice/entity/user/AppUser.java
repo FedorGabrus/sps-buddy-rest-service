@@ -25,6 +25,7 @@ import javax.persistence.FetchType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
+import javax.persistence.MapsId;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
 import lombok.Getter;
@@ -68,11 +69,8 @@ public class AppUser implements Serializable {
     @JoinColumn(name = "RoleID")
     private UserRole role;
     
-    @OneToOne(
-            optional = true,
-            fetch = FetchType.EAGER,
-            cascade = CascadeType.ALL)
-    @JoinColumn(name = "Email", insertable = false, updatable = false)
+    @OneToOne(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+    @JoinColumn(name = "Email")
     private AuthorizationToken token;
 
     @Override

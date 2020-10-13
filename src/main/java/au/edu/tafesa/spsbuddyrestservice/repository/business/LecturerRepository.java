@@ -33,6 +33,6 @@ public interface LecturerRepository extends Repository<Lecturer, String> {
      * @param lecturerEmail email to search
      * @return lecturer's ID
      */
-    Optional<LecturerIDProjection> findByEmailAddress(String lecturerEmail);
+    Optional<LecturerIDProjection> findByEmailAddressIs(String lecturerEmail);
     
 }

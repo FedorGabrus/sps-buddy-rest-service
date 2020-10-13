@@ -16,28 +16,25 @@
 package au.edu.tafesa.spsbuddyrestservice.model;
 
 import java.io.Serializable;
-import lombok.Builder;
 import lombok.Data;
 import lombok.NonNull;
 
 /**
- * DTO used to transfer user data after successful authentication.
+ * Represents generic response data.
  * 
  * @author Fedor Gabrus
  */
 @Data
-@Builder
-public class AuthenticationResponse implements Serializable {
+public class GenericResponseBody implements Serializable {
     
     private static final long serialVersionUID = 1L;
     
     @NonNull
-    private final String jwt;
+    private final String timestamp;
+    
+    private final int status;
+    
     @NonNull
-    private final String role;
-    @NonNull
-    private final String id;
-    @NonNull
-    private final String firstName;
+    private final String message;
     
 }

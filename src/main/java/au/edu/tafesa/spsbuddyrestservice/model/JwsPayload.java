@@ -15,6 +15,7 @@
  */
 package au.edu.tafesa.spsbuddyrestservice.model;
 
+import java.io.Serializable;
 import java.time.ZonedDateTime;
 
 /**
@@ -22,7 +23,7 @@ import java.time.ZonedDateTime;
  * 
  * @author Fedor Gabrus
  */
-public interface JwsPayload {
+public interface JwsPayload extends Serializable {
     
     /**
      * Allows to compare dates after conversion from legacy Date class.
@@ -32,5 +33,9 @@ public interface JwsPayload {
      * @return true if date and time almost equal, false otherwise
      */
     boolean isAlmostEqualToIssueDate(ZonedDateTime dateTime);
+    
+    String getUserEmail();
+    
+    String getTokenUid();
     
 }

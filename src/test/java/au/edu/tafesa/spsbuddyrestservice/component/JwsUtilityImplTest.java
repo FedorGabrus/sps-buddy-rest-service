@@ -16,7 +16,6 @@
 package au.edu.tafesa.spsbuddyrestservice.component;
 
 import au.edu.tafesa.spsbuddyrestservice.config.JwsConfig;
-import au.edu.tafesa.spsbuddyrestservice.exception.AuthorizationTokenExpiredException;
 import au.edu.tafesa.spsbuddyrestservice.model.JwsPayloadImpl;
 import io.jsonwebtoken.JwtException;
 import io.jsonwebtoken.Jwts;
@@ -26,24 +25,24 @@ import org.junit.jupiter.api.Test;
 import org.springframework.test.util.ReflectionTestUtils;
 
 /**
- * JwsUtility test.
+ * JwsUtilityImpl test.
  * 
  * @author Fedor Gabrus
  */
-public class JwsUtilityTest {
+public class JwsUtilityImplTest {
     
     private final long TOKEN_LIFE_SPAN = 10;
     private final String SIGNATURE = "Zkq9LSXFOpxeh7_3Ev94ag_9Gqls5WsFCrMAgMPuKmw";
 
-    private final JwsUtility instance;
+    private final JwsUtilityImpl instance;
     
     /**
      * Constructor.
      * Populates required fields. 
      */
-    public JwsUtilityTest() {
+   JwsUtilityImplTest() {
         // Sets token lifespan.
-        instance = new JwsUtility();
+        instance = new JwsUtilityImpl();
         ReflectionTestUtils.setField(instance, "tokenLifeSpan", TOKEN_LIFE_SPAN);
         
         // Sets secret key.
@@ -53,7 +52,7 @@ public class JwsUtilityTest {
     }
 
     /**
-     * Test of createEncodedJws method, of class JwsUtility.
+     * Test of createEncodedJws method, of class JwsUtilityImpl.
      */
     @Test
     public void testCreateEncodedJws() {
@@ -62,7 +61,7 @@ public class JwsUtilityTest {
     }
 
     /**
-     * Test of verifySignatureAndGetPayload method, of class JwsUtility.
+     * Test of verifySignatureAndGetPayload method, of class JwsUtilityImpl.
      */
     @Test
     public void testVerifySignatureAndGetPayload() {
@@ -78,9 +77,9 @@ public class JwsUtilityTest {
                 .as("No exception with valid token")
                 .doesNotThrowAnyException();
         
-        // Test that proper exception thrown when token expiered.
-        assertThatExceptionOfType(AuthorizationTokenExpiredException.class)
-                .as("Expired token exception")
+        // Test: throws exception if token expiered.
+        assertThatExceptionOfType(JwtException.class)
+                .as("Token expiered")
                 .isThrownBy(() -> instance.verifySignatureAndGetPayload(
                         // Creates expired token.
                         instance.createEncodedJws(email, uid, issuedAt.minusMinutes(TOKEN_LIFE_SPAN + 1))));
@@ -92,7 +91,7 @@ public class JwsUtilityTest {
                 .isEqualToComparingFieldByField(new JwsPayloadImpl(email, uid, issuedAt));
         
         // Test token with wrong signature.
-        var instanceWithNewSecretKey = new JwsUtility();
+        var instanceWithNewSecretKey = new JwsUtilityImpl();
         ReflectionTestUtils.setField(instanceWithNewSecretKey, "tokenLifeSpan", TOKEN_LIFE_SPAN);
         // Config file for new secret key.
         var jwsConfig = new JwsConfig();

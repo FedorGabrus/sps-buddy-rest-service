@@ -13,26 +13,22 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package au.edu.tafesa.spsbuddyrestservice.repository.business;
+package au.edu.tafesa.spsbuddyrestservice.exception;
 
-import au.edu.tafesa.spsbuddyrestservice.entity.business.Student;
-import au.edu.tafesa.spsbuddyrestservice.entity.business.projection.StudentIDProjection;
-import java.util.Optional;
-import org.springframework.data.repository.Repository;
+import org.springframework.http.HttpStatus;
+import org.springframework.web.bind.annotation.ResponseStatus;
 
 /**
- * Repository to query student table.
+ * Exception for bad credentials.
+ * Can be used with @RestController annotation. 
  * 
  * @author Fedor Gabrus
  */
-public interface StudentRepository extends Repository<Student, String> {
+@ResponseStatus(value = HttpStatus.UNAUTHORIZED, reason = "Bad credentials")
+public class BadCredentialsException extends RuntimeException {
     
-    /**
-     * Retrieves student's id by email.
-     * 
-     * @param studentEmail email for search
-     * @return student's ID
-     */
-    Optional<StudentIDProjection> findByEmailAddressIs(String studentEmail);
+    public BadCredentialsException() {
+        super("Bad credentials");
+    }
     
 }

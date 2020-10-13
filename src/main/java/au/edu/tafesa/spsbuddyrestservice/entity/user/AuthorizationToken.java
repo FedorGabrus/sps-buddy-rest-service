@@ -22,13 +22,13 @@ import javax.persistence.Basic;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.FetchType;
 import javax.persistence.Id;
-import javax.persistence.MapsId;
+import javax.persistence.JoinColumn;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.NonNull;
 import lombok.Setter;
 import lombok.ToString;
 
@@ -60,12 +60,18 @@ public class AuthorizationToken implements Serializable {
     @Column(name = "IssuedAt")
     private ZonedDateTime issueDateTime;
     
-    @OneToOne(
-            fetch = FetchType.LAZY,
-            cascade = {CascadeType.DETACH, CascadeType.MERGE, CascadeType.PERSIST, CascadeType.REFRESH})
-    @MapsId
-    @ToString.Exclude
-    private AppUser user;
+    /**
+     * Constructor without OneToOne relation.
+     * 
+     * @param userEmail user's email
+     * @param uid token UID
+     * @param issuedAt timestamp
+     */
+    public AuthorizationToken(@NonNull String userEmail, @NonNull String uid, @NonNull ZonedDateTime issuedAt) {
+        this.userEmail = userEmail;
+        tokenUID = uid;
+        issueDateTime = issuedAt;
+    }
 
     @Override
     public int hashCode() {

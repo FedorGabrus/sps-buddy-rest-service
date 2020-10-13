@@ -15,117 +15,57 @@
  */
 package au.edu.tafesa.spsbuddyrestservice.model;
 
-import java.io.Serializable;
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.Objects;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.NonNull;
-import lombok.Setter;
-import lombok.ToString;
-import org.springframework.security.core.GrantedAuthority;
-import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import java.util.Optional;
 import org.springframework.security.core.userdetails.UserDetails;
 
 /**
- * Represents application principal user's details.
- * Assumes that user can have only one role.
+ * User interface describes class that provides core app user's information.
+ * User can have only one role in the app.
  * 
  * @author Fedor Gabrus
  */
-@Getter
-@Setter
-@ToString
-@Builder
-public final class User implements UserDetails, Serializable {
+public interface User extends UserDetails {
     
-    private static final long serialVersionUID = 1L;
-    
-    // Either student or lecturer id.
-    private final String userId;
-    
-    @NonNull
-    private final String email;
-    
-    @NonNull
-    @ToString.Exclude
-    private final String password;
-    
-    // Setermines whether account is active.
-    private final boolean enabled;
-    
-    @NonNull
-    private final UserAuthority role;
-    
-    private UserToken authToken;
-
-    @Override
-    public Collection<? extends GrantedAuthority> getAuthorities() {
-        return Arrays.asList(new SimpleGrantedAuthority(role.toString()));
-    }
-
     /**
-     * Obtains username. Application uses emails as user identifiers.
+     * Gets user's ID.
+     * 
+     * @return user's id
+     */
+    String getUserId();
+    
+    /**
+     * Obtains user's authorization token.
+     * 
+     * @return user's authorization token wrapped in optional
+     */
+    Optional<UserToken> getAuthToken();
+    
+    /**
+     * Sets authToken for user.
+     * 
+     * @param authToken new auth token
+     */
+    void setAuthToken(UserToken authToken);
+    
+    /**
+     * Gets name of user's role.
+     * 
+     * @return name of user's role.
+     */
+    String getRoleName();
+    
+    /**
+     * Gets user's role.
+     * 
+     * @return user's role
+     */
+    UserAuthority getRole();
+    
+    /**
+     * Gets user's email.
      * 
      * @return user's email
      */
-    @Override
-    public String getUsername() {
-        return email;
-    }
-
-    /**
-     * Not implemented.
-     * 
-     * @return
-     */
-    @Override
-    public boolean isAccountNonExpired() {
-        return true;
-    }
-
-    /**
-     * Not implemented.
-     * 
-     * @return 
-     */
-    @Override
-    public boolean isAccountNonLocked() {
-        return true;
-    }
-
-    /**
-     * Not implemented.
-     * 
-     * @return 
-     */
-    @Override
-    public boolean isCredentialsNonExpired() {
-        return true;
-    }
-
-    @Override
-    public int hashCode() {
-        int hash = 7;
-        hash = 97 * hash + Objects.hashCode(this.email);
-        return hash;
-    }
-
-    @Override
-    public boolean equals(Object obj) {
-        if (this == obj) {
-            return true;
-        }
-        if (obj == null) {
-            return false;
-        }
-        if (getClass() != obj.getClass()) {
-            return false;
-        }
-        final User other = (User) obj;
-        return Objects.equals(this.email, other.email);
-    }
+    String getEmail();
     
 }

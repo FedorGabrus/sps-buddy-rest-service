@@ -15,7 +15,6 @@
  */
 package au.edu.tafesa.spsbuddyrestservice.model;
 
-import java.io.Serializable;
 import java.time.ZonedDateTime;
 import java.time.temporal.ChronoUnit;
 import lombok.EqualsAndHashCode;
@@ -31,12 +30,15 @@ import lombok.ToString;
 @Getter
 @EqualsAndHashCode
 @ToString
-public class JwsPayloadImpl implements Serializable, JwsPayload {
+public class JwsPayloadImpl implements JwsPayload {
     
     private static final long serialVersionUID = 1L;
     
+    @NonNull
     private final String userEmail;
+    @NonNull
     private final String tokenUid;
+    @NonNull
     private final ZonedDateTime issuedAt;
 
     /**

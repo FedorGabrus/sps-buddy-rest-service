@@ -17,6 +17,8 @@ package au.edu.tafesa.spsbuddyrestservice.repository.business;
 
 import au.edu.tafesa.spsbuddyrestservice.entity.business.Student;
 import static org.assertj.core.api.Assertions.*;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -40,35 +42,45 @@ public class StudentRepositoryTest {
     @Autowired
     private StudentRepository repository;
     
-    /**
-     * Test of findByEmailAddress method, of class StudentRepository.
-     */
-    @Test
-    public void testFindByEmailAddress() {
-        // Test set up.
-        final String studentEmail = "test@mail.com";
-        final String expectedID = "studentID";
-        final var student = new Student();
-        student.setStudentID(expectedID);
-        student.setEmailAddress(studentEmail);
+    private Student student;
+    
+    @BeforeEach
+    void init() {
+        student = new Student();
+        student.setEmailAddress("email");
         student.setFirstName("John");
         student.setLastName("Doe");
-        entityManager.persist(student);
+        student.setStudentID("studId");
         
-        // Tests.
-        assertThatCode(() -> repository.findByEmailAddress(studentEmail))
+        entityManager.persistAndFlush(student);
+    }
+    
+    @AfterEach
+    void cleanUp() {
+        if (student != null) {
+            entityManager.remove(student);
+            student = null;
+            entityManager.flush();
+        }
+    }
+    
+    /**
+     * Test of findByEmailAddressIs method, of class StudentRepository.
+     */
+    @Test
+    void testFindByEmailAddressIs() {
+        assertThatCode(() -> repository.findByEmailAddressIs(student.getEmailAddress()))
                 .as("Doesn't throw Exceptions")
                 .doesNotThrowAnyException();
         
-        assertThat(repository.findByEmailAddress(studentEmail).get().getStudentID())
+        assertThat(repository.findByEmailAddressIs(student.getEmailAddress()).get().getStudentID())
                 .as("Obtains expected student ID")
-                .isEqualTo(expectedID);
+                .isEqualTo(student.getStudentID());
         
         
-        assertThat(repository.findByEmailAddress("No such email"))
+        assertThat(repository.findByEmailAddressIs("No such email"))
                 .as("Returns empty optional")
                 .isEmpty();
     }
-
     
 }

@@ -13,26 +13,28 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package au.edu.tafesa.spsbuddyrestservice.repository.business;
+package au.edu.tafesa.spsbuddyrestservice.config;
 
-import au.edu.tafesa.spsbuddyrestservice.entity.business.Student;
-import au.edu.tafesa.spsbuddyrestservice.entity.business.projection.StudentIDProjection;
-import java.util.Optional;
-import org.springframework.data.repository.Repository;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
 
 /**
- * Repository to query student table.
+ * Provides beans for custom error HTTP responses.
  * 
  * @author Fedor Gabrus
  */
-public interface StudentRepository extends Repository<Student, String> {
+@Configuration
+public class ErrorResponseConfig {
     
     /**
-     * Retrieves student's id by email.
+     * Provides Jackson ObjectMapper.
      * 
-     * @param studentEmail email for search
-     * @return student's ID
+     * @return ObjectMapper
      */
-    Optional<StudentIDProjection> findByEmailAddressIs(String studentEmail);
+    @Bean
+    public ObjectMapper errorObjectMapper() {
+        return new ObjectMapper();
+    }
     
 }

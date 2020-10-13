@@ -51,7 +51,7 @@ public class JwsPayloadImplTest {
      * Test of isAlmostEqualToIssueDate method, of class JwsPayloadImpl.
      */
     @Test
-    public void testIsAlmostEqualToIssueDate() {
+    void testIsAlmostEqualToIssueDate() {
         final var timeDate = ZonedDateTime.now();
         
         // Tests that converted from Date ZonedDatetime compared properly.
@@ -70,6 +70,28 @@ public class JwsPayloadImplTest {
         assertThat(new JwsPayloadImpl("email", "UID", timeDate).isAlmostEqualToIssueDate(timeDate.minusSeconds(1)))
                 .as("Not equal -1 second")
                 .isFalse();
+    }
+    
+    /**
+     * Test of getUserEmail method.
+     */
+    @Test
+    void testGetUserEmail() {
+        final String email = "email";
+        assertThat(new JwsPayloadImpl(email, "UID", ZonedDateTime.now()).getUserEmail())
+                .as("Test email getter")
+                .isEqualTo(email);
+    }
+ 
+    /**
+     * Test of getTokenUid method.
+     */
+    @Test
+    void testGetTokenUid() {
+        final String uid = "uid";
+        assertThat(new JwsPayloadImpl("email", uid, ZonedDateTime.now()).getTokenUid())
+                .as("Test uid getter")
+                .isEqualTo(uid);
     }
     
 }

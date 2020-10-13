@@ -15,27 +15,33 @@
  */
 package au.edu.tafesa.spsbuddyrestservice.model;
 
+import java.time.ZonedDateTime;
 import static org.assertj.core.api.Assertions.*;
 import org.junit.jupiter.api.Test;
 
-
 /**
- * Unit test for EmailPasswordDTO
+ * Tests for GenericResponseBody.
  * 
  * @author Fedor Gabrus
  */
-public class EmailPasswordDTOTest {
+public class GenericResponseBodyTest {
     
     /**
-     * Tests constructor.
+     * Test of constructor.
      */
     @Test
     void testConstructor() {
-        assertThatCode(() -> new EmailPasswordDTO("email", "pass")).doesNotThrowAnyException();
-        assertThat(new EmailPasswordDTO("email", "pass")).isNotNull();
-        assertThatNullPointerException().isThrownBy(() -> new EmailPasswordDTO(null, null));
-        assertThatNullPointerException().isThrownBy(() -> new EmailPasswordDTO(null, "pass"));
-        assertThatNullPointerException().isThrownBy(() -> new EmailPasswordDTO("email", null));
+        assertThatCode(() -> new GenericResponseBody(ZonedDateTime.now().toString(), 0, "message"))
+                .as("Constructor doesn't throw excepions")
+                .doesNotThrowAnyException();
+        
+        assertThatNullPointerException()
+                .isThrownBy(() -> new GenericResponseBody(null, 0, "message"))
+                .as("Time stamp can't be bull");
+        
+        assertThatNullPointerException()
+                .isThrownBy(() -> new GenericResponseBody(ZonedDateTime.now().toString(), 0, null))
+                .as("Message can't be null");
     }
     
 }

@@ -15,6 +15,8 @@
  */
 package au.edu.tafesa.spsbuddyrestservice.config;
 
+import au.edu.tafesa.spsbuddyrestservice.component.JwtAuthorizationFilter;
+import au.edu.tafesa.spsbuddyrestservice.component.JwtAuthorizationExceptionFilter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.annotation.Bean;
@@ -27,6 +29,8 @@ import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.factory.PasswordEncoderFactories;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+import au.edu.tafesa.spsbuddyrestservice.service.UserService;
 
 /**
  * Spring security configuration.
@@ -38,9 +42,14 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
     
     @Autowired
-    @Qualifier("appUserDetailsService")
-    private UserDetailsService userDetailsService;
-
+    private UserService appUserService;
+    
+    @Autowired
+    private JwtAuthorizationFilter jwtAuthorizationFilter;
+    
+    @Autowired
+    private JwtAuthorizationExceptionFilter jwtAuthorizationExceptionFilter;
+    
     /**
      * Configures authentication manager builder.
      * 
@@ -50,7 +59,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
     @Override
     protected void configure(AuthenticationManagerBuilder auth) throws Exception {
         // Configures service to fetch application users.
-        auth.userDetailsService(userDetailsService);
+        auth.userDetailsService(appUserService).passwordEncoder(passwordEncoder());
     }
 
     /**
@@ -61,15 +70,18 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
     @Override
     protected void configure(HttpSecurity http) throws Exception {
         // Disables csrf protection as the app is stateless.
-        http.csrf().disable()
+        http.cors().and().csrf().disable()
                 // Configures url access.
                 .authorizeRequests()
                 .antMatchers("/").permitAll()
-                .antMatchers("/api/v1/authenticate").permitAll()
+                .antMatchers("/api/authenticate").permitAll()
                 .anyRequest().authenticated()
                 // Disables sessions.
                 .and()
-                .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS);
+                .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)
+                .and()
+                .addFilterBefore(jwtAuthorizationFilter, UsernamePasswordAuthenticationFilter.class)
+                .addFilterBefore(jwtAuthorizationExceptionFilter, JwtAuthorizationFilter.class);
     }
     
     /**

@@ -15,20 +15,19 @@
  */
 package au.edu.tafesa.spsbuddyrestservice.exception;
 
+import org.springframework.http.HttpStatus;
+import org.springframework.web.bind.annotation.ResponseStatus;
+
 /**
- * AuthorizationTokenExpiredException throws when provided authorization token expired.
+ * Throws when user and business DBs have inconsistent data.
  * 
  * @author Fedor Gabrus
  */
-public class AuthorizationTokenExpiredException extends RuntimeException {
+@ResponseStatus(value = HttpStatus.INTERNAL_SERVER_ERROR, reason = "Inconsistent data")
+public class InconsistentDataException extends RuntimeException {
     
-    private static final long serialVersionUID = 1L;
-
-    /**
-     * Constructor.
-     */
-    public AuthorizationTokenExpiredException() {
-        super("Authorization token expired");
+    public InconsistentDataException(String message) {
+        super(message);
     }
     
 }

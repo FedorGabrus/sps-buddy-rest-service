@@ -65,7 +65,7 @@ public class AppUserRepositoryTest {
         final var token = new AuthorizationToken();
         token.setIssueDateTime(tokenIssuedAt);
         token.setTokenUID("UID");
-        token.setUser(userWithToken);
+        token.setUserEmail(userWithToken.getEmail());
 
         userWithToken.setToken(token);
         

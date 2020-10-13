@@ -13,28 +13,31 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package au.edu.tafesa.spsbuddyrestservice.entity.business.projection;
+package au.edu.tafesa.spsbuddyrestservice.service;
+
+import au.edu.tafesa.spsbuddyrestservice.model.User;
+import org.springframework.security.core.userdetails.UserDetailsService;
 
 /**
- * Projection to retrieve student's ID from student table.
+ * UserService describes class that handles application user data.
  * 
  * @author Fedor Gabrus
  */
-public interface StudentIDProjection {
+public interface UserService extends UserDetailsService {
     
     /**
-     * ID getter from Student entity.
+     * Creates new authorization token and saves it to the DB.
+     * Deletes old token.
      * 
-     * @return student's ID
+     * @param forUser user that needs new token
+     * @return encoded token representation
      */
-    String getStudentID();
+    String createNewAuthorizationToken(User forUser);
     
     /**
-     * ID setter from Student entity.
-     * Used mostly in tests.
+     * Removes user's authentication token.
      * 
-     * @param studentID new student's ID
+     * @param forUser user to log out
      */
-    void setStudentID(String studentID);
-    
+    void deleteAuthorizationToken(User forUser);
 }

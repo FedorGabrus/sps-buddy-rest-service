@@ -13,26 +13,27 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package au.edu.tafesa.spsbuddyrestservice.repository.business;
+package au.edu.tafesa.spsbuddyrestservice.model;
 
-import au.edu.tafesa.spsbuddyrestservice.entity.business.Student;
-import au.edu.tafesa.spsbuddyrestservice.entity.business.projection.StudentIDProjection;
-import java.util.Optional;
-import org.springframework.data.repository.Repository;
+import java.io.Serializable;
+import lombok.NonNull;
+import lombok.Value;
 
 /**
- * Repository to query student table.
+ * DTO used to transfer user data after successful authentication.
  * 
  * @author Fedor Gabrus
  */
-public interface StudentRepository extends Repository<Student, String> {
+@Value
+public class AuthenticationResponseBody implements Serializable {
     
-    /**
-     * Retrieves student's id by email.
-     * 
-     * @param studentEmail email for search
-     * @return student's ID
-     */
-    Optional<StudentIDProjection> findByEmailAddressIs(String studentEmail);
+    private static final long serialVersionUID = 1L;
+    
+    @NonNull
+    private final String jwt;
+    @NonNull
+    private final String role;
+    @NonNull
+    private final String id;
     
 }

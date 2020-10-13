@@ -15,20 +15,25 @@
  */
 package au.edu.tafesa.spsbuddyrestservice.service;
 
+import au.edu.tafesa.spsbuddyrestservice.component.JwsUtility;
 import au.edu.tafesa.spsbuddyrestservice.entity.user.AppUser;
+import au.edu.tafesa.spsbuddyrestservice.entity.user.AuthorizationToken;
+import au.edu.tafesa.spsbuddyrestservice.exception.InconsistentDataException;
 import au.edu.tafesa.spsbuddyrestservice.model.User;
+import au.edu.tafesa.spsbuddyrestservice.model.UserImpl;
 import au.edu.tafesa.spsbuddyrestservice.model.UserAuthority;
 import au.edu.tafesa.spsbuddyrestservice.model.UserToken;
 import au.edu.tafesa.spsbuddyrestservice.repository.business.LecturerRepository;
 import au.edu.tafesa.spsbuddyrestservice.repository.business.StudentRepository;
 import au.edu.tafesa.spsbuddyrestservice.repository.user.AppUserRepository;
+import au.edu.tafesa.spsbuddyrestservice.repository.user.AuthorizationTokenRepository;
+import java.time.ZonedDateTime;
 import java.util.Optional;
+import java.util.UUID;
 import lombok.NonNull;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
@@ -37,9 +42,9 @@ import org.springframework.stereotype.Service;
  *
  * @author Fedor Gabrus
  */
-@Service
 @Slf4j
-public class AppUserDetailsService implements UserDetailsService {
+@Service
+public class UserServiceImpl implements UserService {
 
     // Email domain for username validation.
     @Value("${app.user.email.domain}")
@@ -49,24 +54,29 @@ public class AppUserDetailsService implements UserDetailsService {
     private AppUserRepository appUserRepository;
     
     @Autowired
+    private AuthorizationTokenRepository authorizationTokenRepository;
+    
+    @Autowired
     private StudentRepository studentRepository;
     
     @Autowired
     private LecturerRepository lecturerRepository;
+    
+    @Autowired
+    private JwsUtility jwsUtility;
 
     /**
      * Retrieves UserDetails. Searches user by school email.
      * Throws UsernameNotFoundException when user not found by email or when no user with provided email
      * in Student or Lecturer tables or when user's role is different from student or lecturer.
      * 
-     * 
      * @param userEmail school email
-     * @return User retrieved user's data
-     * @throws UsernameNotFoundException when user not found or inconsistent data in users and business DB
-     * or when role is different from student or lecturer.
+     * @return UserImpl retrieved user's data
+     * @throws UsernameNotFoundException when user not found
+     * @throws InconsistentDataException throws when no user in corresponding business DB table
      */
     @Override
-    public UserDetails loadUserByUsername(String userEmail) throws UsernameNotFoundException {
+    public User loadUserByUsername(String userEmail) throws UsernameNotFoundException, InconsistentDataException {
         // Throws exception if email has invalid pattern.
         if (isEmailHasInvalidPattern(userEmail)) {
             final String error = "Email '" + userEmail + "' has invalid pattern";
@@ -91,11 +101,11 @@ public class AppUserDetailsService implements UserDetailsService {
                             + user.getRole().getRoleType()
                             + "' has no record in corresponding table of business DB";
                     log.error(error);
-                    return new UsernameNotFoundException(error);
+                    return new InconsistentDataException(error);
                 });
         
         // Builds user model.
-        return User.builder()
+        return UserImpl.builder()
                 .userId(userId)
                 .email(user.getEmail())
                 .password(user.getPassword())
@@ -132,18 +142,64 @@ public class AppUserDetailsService implements UserDetailsService {
         switch (userRole) {
             case ROLE_STUDENT:
                 // Obtains student's id.
-                return studentRepository.findByEmailAddress(userEmail)
+                return studentRepository.findByEmailAddressIs(userEmail)
                         .map(studentIDProjection -> studentIDProjection.getStudentID());
                 
             case ROLE_LECTURER:
                 // Obtains lecturer's id.
-                return lecturerRepository.findByEmailAddress(userEmail)
+                return lecturerRepository.findByEmailAddressIs(userEmail)
                         .map(lecturerIDProjection -> lecturerIDProjection.getLecturerID());
                 
             default:
                 // Returns empty optional if role unknown.
                 return Optional.empty();
         }
+    }
+
+    /**
+     * Creates new authorization token and persists it in the DB.
+     * Updates passed in User object.
+     * 
+     * @param forUser user that needs new tokenEntity. Not null
+     * @return encoded tokenEntity representation
+     */
+    @Override
+    public String createNewAuthorizationToken(@NonNull User forUser) {
+        // Creates new tokenEntity entity.
+        var tokenEntity = new AuthorizationToken(forUser.getEmail(), UUID.randomUUID().toString(),
+                ZonedDateTime.now());
+        
+        // Persists token.
+        tokenEntity = authorizationTokenRepository.save(tokenEntity);
+        
+        // Updates for user.
+        forUser.setAuthToken(new UserToken(tokenEntity.getTokenUID(), tokenEntity.getIssueDateTime()));
+        
+        // Encodes tokenEntity as JWT.
+        return jwsUtility.createEncodedJws(tokenEntity.getUserEmail(), tokenEntity.getTokenUID(),
+                tokenEntity.getIssueDateTime());
+    }
+
+    /**
+     * Removes authorization tokenEntity for user.
+     * 
+     * @param forUser user to remove tokenEntity
+     */
+    @Override
+    public void deleteAuthorizationToken(@NonNull User forUser) {
+        // Deletes token or logs error.
+        forUser.getAuthToken().ifPresentOrElse(
+                val -> {
+                    // Deletes token from the DB.
+                    authorizationTokenRepository.deleteById(forUser.getEmail());
+                    // Removes token from User object.
+                    forUser.setAuthToken(null);
+                },
+                () -> {
+                    final String error = "Attempt to delete non-existent token";
+                    log.error(error);
+                    throw new RuntimeException(error);
+                });
     }
     
 }
