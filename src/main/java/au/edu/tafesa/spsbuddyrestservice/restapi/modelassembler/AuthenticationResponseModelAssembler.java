@@ -47,11 +47,13 @@ public class AuthenticationResponseModelAssembler
         final var model = EntityModel.of(responseBody);
         
         try {
-            // Adds link to the end-point
-            model.add(linkTo(AuthenticationController.class.getMethod("authenticate", AuthenticationRequestBody.class),
-                    new AuthenticationRequestBody()).withSelfRel());
+            // Adds link to self.
+            model.add(linkTo(AuthenticationController.class.getMethod("logIn", AuthenticationRequestBody.class),
+                    (AuthenticationRequestBody) null).withSelfRel());
+            
+            // Adds link to log out.
             model.add(linkTo(AuthenticationController.class.getMethod("logOut", Authentication.class),
-                    new UsernamePasswordAuthenticationToken(null, null)).withRel("log out"));
+                    (UsernamePasswordAuthenticationToken) null).withRel("log out"));
         } catch (NoSuchMethodException | SecurityException ex) {
             final String error = "Link creation failed";
             log.error(error);

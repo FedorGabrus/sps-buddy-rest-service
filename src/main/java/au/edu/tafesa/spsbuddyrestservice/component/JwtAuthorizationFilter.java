@@ -151,7 +151,7 @@ public class JwtAuthorizationFilter extends OncePerRequestFilter {
      */
     private static String getPathToAuthenticationEndPoint() {
         try {
-            return linkTo(AuthenticationController.class.getMethod("authenticate", AuthenticationRequestBody.class),
+            return linkTo(AuthenticationController.class.getMethod("logIn", AuthenticationRequestBody.class),
                     (AuthenticationRequestBody) null).toUri().getPath();
         }
         catch (NoSuchMethodException | SecurityException ex) {

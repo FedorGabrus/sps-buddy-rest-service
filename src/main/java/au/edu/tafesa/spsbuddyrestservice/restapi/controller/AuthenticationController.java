@@ -65,8 +65,8 @@ public class AuthenticationController {
      * @param requestBody AuthenticationRequestBody object
      * @return EntityModel with AuthenticationResponseBody
      */
-    @PostMapping("/authenticate")
-    public EntityModel<AuthenticationResponseBody> authenticate(
+    @PostMapping("/login")
+    public EntityModel<AuthenticationResponseBody> logIn(
             @Valid @RequestBody AuthenticationRequestBody requestBody) {
         try {
             // Authenticate user with resieved credentials. Throws AuthenticationException in case of bad credetials.
