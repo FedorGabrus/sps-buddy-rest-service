@@ -62,7 +62,5 @@ public class AuthenticationResponseModelAssembler
                 
         return model;
     }
-
-    
     
 }

@@ -35,7 +35,7 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
 import au.edu.tafesa.spsbuddyrestservice.service.UserService;
-import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
+import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.*;
 
 /**
  * Security authorization filter. Authorizes user if request contains a valid JWS.
@@ -150,15 +150,7 @@ public class JwtAuthorizationFilter extends OncePerRequestFilter {
      * @return path to the authentication end point
      */
     private static String getPathToAuthenticationEndPoint() {
-        try {
-            return linkTo(AuthenticationController.class.getMethod("logIn", AuthenticationRequestBody.class),
-                    (AuthenticationRequestBody) null).toUri().getPath();
-        }
-        catch (NoSuchMethodException | SecurityException ex) {
-            final String error = "Can't create link to the authentication end-point";
-            log.error(error);
-            throw new RuntimeException(error);
-        }
+        return linkTo(methodOn(AuthenticationController.class).logIn(null)).toUri().getPath();
     }
     
 }

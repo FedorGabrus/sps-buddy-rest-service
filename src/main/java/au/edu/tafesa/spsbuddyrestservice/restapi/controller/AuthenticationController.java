@@ -27,6 +27,7 @@ import javax.validation.Valid;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.hateoas.EntityModel;
+import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.*;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -91,11 +92,14 @@ public class AuthenticationController {
     }
     
     @GetMapping("/logout")
-    public ResponseEntity<GenericResponseBody> logOut(
+    public ResponseEntity<EntityModel<GenericResponseBody>> logOut(
             @CurrentSecurityContext(expression = "authentication") Authentication user) {
         log.debug(user.toString());
         userService.deleteAuthorizationToken((User) user.getPrincipal());
-        return ResponseEntity.ok(new GenericResponseBody(ZonedDateTime.now().toString(), 200, "User loged out"));
+        return ResponseEntity.ok(EntityModel.of(
+                new GenericResponseBody(ZonedDateTime.now().toString(), 200, "User loged out"),
+                linkTo(methodOn(AuthenticationController.class).logOut(user)).withSelfRel(),
+                linkTo(methodOn(AuthenticationController.class).logIn(null)).withRel("log in")));
     }
     
 }
