@@ -1,4 +1,4 @@
-/*
+ /*
  * Copyright 2020 TAFE SA
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -22,7 +22,6 @@ import io.jsonwebtoken.JwtException;
 import io.jsonwebtoken.Jwts;
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
-import java.time.temporal.ChronoUnit;
 import java.util.Date;
 import javax.crypto.SecretKey;
 import lombok.NonNull;
@@ -48,6 +47,14 @@ public class JwsUtilityImpl implements JwsUtility {
     @Qualifier("jwsSecretKeyBean")
     private SecretKey jwsSecretKey;
 
+    /**
+     * Creates JWS.
+     * 
+     * @param email user's email
+     * @param tokenUid token UID
+     * @param issuedAt timestamp, should be truncated to seconds.
+     * @return string that represents JWS
+     */
     @Override
     public String createEncodedJws(@NonNull String email, @NonNull String tokenUid, @NonNull ZonedDateTime issuedAt) {
         return Jwts.builder()
@@ -56,7 +63,7 @@ public class JwsUtilityImpl implements JwsUtility {
                 // UID to validate token.
                 .setId(tokenUid)
                 // Issue date used for later validation.
-                .setIssuedAt(Date.from(issuedAt.toInstant().truncatedTo(ChronoUnit.SECONDS)))
+                .setIssuedAt(Date.from(issuedAt.toInstant()))
                 .signWith(jwsSecretKey)
                 .compact();
     }

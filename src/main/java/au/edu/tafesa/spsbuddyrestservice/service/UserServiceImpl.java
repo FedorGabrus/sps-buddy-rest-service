@@ -28,6 +28,7 @@ import au.edu.tafesa.spsbuddyrestservice.repository.business.StudentRepository;
 import au.edu.tafesa.spsbuddyrestservice.repository.user.AppUserRepository;
 import au.edu.tafesa.spsbuddyrestservice.repository.user.AuthorizationTokenRepository;
 import java.time.ZonedDateTime;
+import java.time.temporal.ChronoUnit;
 import java.util.Optional;
 import java.util.UUID;
 import lombok.NonNull;
@@ -165,9 +166,9 @@ public class UserServiceImpl implements UserService {
      */
     @Override
     public String createNewAuthorizationToken(@NonNull User forUser) {
-        // Creates new tokenEntity entity.
+        // Creates new tokenEntity entity. Time stamp should be truncated to seconds to avoid inconsistensy whith Date type.
         var tokenEntity = new AuthorizationToken(forUser.getEmail(), UUID.randomUUID().toString(),
-                ZonedDateTime.now());
+                ZonedDateTime.now().truncatedTo(ChronoUnit.SECONDS));
         
         // Persists token.
         tokenEntity = authorizationTokenRepository.save(tokenEntity);

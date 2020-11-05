@@ -63,6 +63,10 @@ public class JwsPayloadImplTest {
                 .as("Almost Equal")
                 .isTrue();
         
+        assertThat(new JwsPayloadImpl("email", "uid", timeDate).isAlmostEqualToIssueDate(timeDate))
+                .as("Works as equal")
+                .isTrue();
+        
         // Test that acceptable imprecision is not more than 1 second.
         assertThat(new JwsPayloadImpl("email", "UID", timeDate).isAlmostEqualToIssueDate(timeDate.plusSeconds(1)))
                 .as("Not equal +1 second")

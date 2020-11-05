@@ -103,9 +103,15 @@ public class JwtAuthorizationFilter extends OncePerRequestFilter {
                 // Validate token UID and date.
                 user.getAuthToken()
                         .filter(userToken -> jwsPayload.getTokenUid().equals(userToken.getUid()))
-                        .filter(userToken -> jwsPayload.isAlmostEqualToIssueDate(userToken.getIssuedAt()))
+                        .filter(userToken -> {
+                            
+                            log.debug("from JWT " + jwsPayload.getIssuedAt().toString());
+                            log.debug("from DB " + userToken.getIssuedAt().toString() + "\n\n");
+                            
+                            return jwsPayload.isAlmostEqualToIssueDate(userToken.getIssuedAt());
+                        })
                         .orElseThrow(() -> {
-                            final String error = "Old token";
+                            final String error = "Old or invalid token";
                             log.debug(error);
                             return new JwtException(error);
                         });

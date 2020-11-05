@@ -38,4 +38,6 @@ public interface JwsPayload extends Serializable {
     
     String getTokenUid();
     
+    ZonedDateTime getIssuedAt();
+    
 }
