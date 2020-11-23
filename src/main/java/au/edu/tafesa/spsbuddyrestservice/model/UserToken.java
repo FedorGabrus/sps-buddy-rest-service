@@ -15,9 +15,10 @@
  */
 package au.edu.tafesa.spsbuddyrestservice.model;
 
-import java.time.ZonedDateTime;
 import lombok.Data;
 import lombok.NonNull;
+
+import java.time.ZonedDateTime;
 
 /**
  * Represents user's authorization token data.
@@ -29,6 +30,7 @@ public class UserToken {
     
     @NonNull
     private final String uid;
+
     @NonNull
     private final ZonedDateTime issuedAt;
     

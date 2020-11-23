@@ -15,18 +15,15 @@
  */
 package au.edu.tafesa.spsbuddyrestservice.entity.business.pk;
 
-import java.io.Serializable;
-import java.time.LocalTime;
-import java.util.Objects;
+import lombok.*;
+
 import javax.persistence.Basic;
 import javax.persistence.Column;
 import javax.persistence.Embeddable;
 import javax.persistence.Embedded;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
-import lombok.ToString;
+import java.io.Serializable;
+import java.time.LocalTime;
+import java.util.Objects;
 
 /**
  * Represents PK for crn_session_timetable table.

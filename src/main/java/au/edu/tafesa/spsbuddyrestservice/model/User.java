@@ -15,8 +15,9 @@
  */
 package au.edu.tafesa.spsbuddyrestservice.model;
 
-import java.util.Optional;
 import org.springframework.security.core.userdetails.UserDetails;
+
+import java.util.Optional;
 
 /**
  * User interface describes class that provides core app user's information.
@@ -67,5 +68,34 @@ public interface User extends UserDetails {
      * @return user's email
      */
     String getEmail();
-    
+
+    /**
+     * Checks if user has provided id.
+     *
+     * @param id id to check
+     * @return true if user has the same id, false otherwise
+     */
+    boolean hasThisId(String id);
+
+    /**
+     * Checks if user has provided authority.
+     *
+     * @param userAuthority authority to check
+     * @return true if user has provided authority, false otherwise
+     */
+    boolean hasThisAuthority(UserAuthority userAuthority);
+
+    /**
+     * Checks whether user is a student.
+     *
+     * @return true if user is a student, false otherwise
+     */
+    boolean isStudent();
+
+    /**
+     * Checks whether user is a lecturer.
+     *
+     * @return true if user is a lecturer, false otherwise
+     */
+    boolean isLecturer();
 }

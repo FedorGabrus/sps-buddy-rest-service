@@ -20,15 +20,9 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 
 /**
  * Exception for bad credentials.
- * Can be used with @RestController annotation. 
  * 
  * @author Fedor Gabrus
  */
 @ResponseStatus(value = HttpStatus.UNAUTHORIZED, reason = "Bad credentials")
 public class BadCredentialsException extends RuntimeException {
-    
-    public BadCredentialsException() {
-        super("Bad credentials");
-    }
-    
 }

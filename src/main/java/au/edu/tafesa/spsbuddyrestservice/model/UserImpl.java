@@ -15,17 +15,14 @@
  */
 package au.edu.tafesa.spsbuddyrestservice.model;
 
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.Objects;
-import java.util.Optional;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.NonNull;
-import lombok.Setter;
-import lombok.ToString;
+import lombok.*;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
+
+import java.util.Collection;
+import java.util.Collections;
+import java.util.Objects;
+import java.util.Optional;
 
 /**
  * Represents application principal user's details.
@@ -41,10 +38,15 @@ public final class UserImpl implements User {
     
     private static final long serialVersionUID = 1L;
     
-    // Either student or lecturer id.
+    /**
+     * Either student or lecturer id.
+     */
     @NonNull
     private final String userId;
-    
+
+    /**
+     * School email. Used as user name.
+     */
     @NonNull
     private final String email;
     
@@ -52,9 +54,15 @@ public final class UserImpl implements User {
     @ToString.Exclude
     private final String password;
     
-    // Determines whether account is active.
+    /**
+     * Determines whether account is active.
+     */
     private final boolean enabled;
     
+    /**
+     * User's authority.
+     * Like ROLE_STUDENT, ROLE_LECTURER, etc.
+     */
     @NonNull
     private final UserAuthority role;
     
@@ -62,7 +70,7 @@ public final class UserImpl implements User {
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
-        return Arrays.asList(new SimpleGrantedAuthority(role.toString()));
+        return Collections.singletonList(new SimpleGrantedAuthority(role.toString()));
     }
 
     /**
@@ -141,5 +149,25 @@ public final class UserImpl implements User {
     public String getRoleName() {
         return role.toString();
     }
-    
+
+    @Override
+    public boolean hasThisId(@NonNull String id) {
+        return this.userId.equals(id);
+    }
+
+    @Override
+    public boolean hasThisAuthority(@NonNull UserAuthority userAuthority) {
+        return this.role.equals(userAuthority);
+    }
+
+    @Override
+    public boolean isStudent() {
+        return role.equals(UserAuthority.ROLE_STUDENT);
+    }
+
+    @Override
+    public boolean isLecturer() {
+        return role.equals(UserAuthority.ROLE_LECTURER);
+    }
+
 }

@@ -17,22 +17,24 @@ package au.edu.tafesa.spsbuddyrestservice.repository.business;
 
 import au.edu.tafesa.spsbuddyrestservice.entity.business.Student;
 import au.edu.tafesa.spsbuddyrestservice.entity.business.projection.StudentIDProjection;
+import org.springframework.data.repository.CrudRepository;
+
 import java.util.Optional;
-import org.springframework.data.repository.Repository;
 
 /**
  * Repository to query student table.
  * 
  * @author Fedor Gabrus
  */
-public interface StudentRepository extends Repository<Student, String> {
+public interface StudentRepository extends CrudRepository<Student, String> {
     
     /**
      * Retrieves student's id by email.
+     * Ignores case.
      * 
      * @param studentEmail email for search
      * @return student's ID
      */
-    Optional<StudentIDProjection> findByEmailAddressIs(String studentEmail);
+    Optional<StudentIDProjection> findByEmailAddressIsIgnoreCase(String studentEmail);
     
 }

@@ -16,8 +16,9 @@
 package au.edu.tafesa.spsbuddyrestservice.repository.user;
 
 import au.edu.tafesa.spsbuddyrestservice.entity.user.AppUser;
-import java.util.Optional;
 import org.springframework.data.repository.Repository;
+
+import java.util.Optional;
 
 /**
  * Repository to query appuser table.
@@ -28,10 +29,11 @@ public interface AppUserRepository extends Repository<AppUser, String> {
     
     /**
      * Looks up for a user by email.
+     * Ignores case.
      * 
      * @param email email to search.
      * @return AppUser wrapped in Optional container
      */
-    Optional<AppUser> findByEmail(String email);
+    Optional<AppUser> findByEmailIgnoreCase(String email);
     
 }

@@ -15,21 +15,21 @@
  */
 package au.edu.tafesa.spsbuddyrestservice.component;
 
-import au.edu.tafesa.spsbuddyrestservice.model.JwsPayload;
-import au.edu.tafesa.spsbuddyrestservice.model.JwsPayloadImpl;
-import io.jsonwebtoken.Claims;
-import io.jsonwebtoken.JwtException;
-import io.jsonwebtoken.Jwts;
-import java.time.ZoneId;
-import java.time.ZonedDateTime;
-import java.util.Date;
-import javax.crypto.SecretKey;
-import lombok.NonNull;
-import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.stereotype.Component;
+ import au.edu.tafesa.spsbuddyrestservice.model.JwsPayload;
+ import au.edu.tafesa.spsbuddyrestservice.model.JwsPayloadImpl;
+ import io.jsonwebtoken.Claims;
+ import io.jsonwebtoken.JwtException;
+ import io.jsonwebtoken.Jwts;
+ import lombok.NonNull;
+ import lombok.extern.slf4j.Slf4j;
+ import org.springframework.beans.factory.annotation.Qualifier;
+ import org.springframework.beans.factory.annotation.Value;
+ import org.springframework.stereotype.Component;
+
+ import javax.crypto.SecretKey;
+ import java.time.ZoneId;
+ import java.time.ZonedDateTime;
+ import java.util.Date;
 
 /**
  * Utility service that generates and processes signed JSON web tokens that used for authorization.
@@ -43,9 +43,11 @@ public class JwsUtilityImpl implements JwsUtility {
     @Value("${app.jwt.body.expiration}")
     private long tokenLifeSpan;
     
-    @Autowired
-    @Qualifier("jwsSecretKeyBean")
-    private SecretKey jwsSecretKey;
+    private final SecretKey jwsSecretKey;
+
+    public JwsUtilityImpl(@Qualifier("jwsSecretKeyBean") SecretKey jwsSecretKey) {
+        this.jwsSecretKey = jwsSecretKey;
+    }
 
     /**
      * Creates JWS.

@@ -15,12 +15,13 @@
  */
 package au.edu.tafesa.spsbuddyrestservice.model;
 
-import java.time.ZonedDateTime;
-import java.time.temporal.ChronoUnit;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.NonNull;
 import lombok.ToString;
+
+import java.time.ZonedDateTime;
+import java.time.temporal.ChronoUnit;
 
 /**
  * Represents payload of a jjwt authorization token.

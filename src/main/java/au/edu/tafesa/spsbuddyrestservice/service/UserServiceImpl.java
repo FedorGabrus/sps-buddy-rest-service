@@ -16,27 +16,30 @@
 package au.edu.tafesa.spsbuddyrestservice.service;
 
 import au.edu.tafesa.spsbuddyrestservice.component.JwsUtility;
+import au.edu.tafesa.spsbuddyrestservice.entity.business.projection.LecturerIDProjection;
+import au.edu.tafesa.spsbuddyrestservice.entity.business.projection.StudentIDProjection;
 import au.edu.tafesa.spsbuddyrestservice.entity.user.AppUser;
 import au.edu.tafesa.spsbuddyrestservice.entity.user.AuthorizationToken;
 import au.edu.tafesa.spsbuddyrestservice.exception.InconsistentDataException;
 import au.edu.tafesa.spsbuddyrestservice.model.User;
-import au.edu.tafesa.spsbuddyrestservice.model.UserImpl;
 import au.edu.tafesa.spsbuddyrestservice.model.UserAuthority;
+import au.edu.tafesa.spsbuddyrestservice.model.UserImpl;
 import au.edu.tafesa.spsbuddyrestservice.model.UserToken;
 import au.edu.tafesa.spsbuddyrestservice.repository.business.LecturerRepository;
 import au.edu.tafesa.spsbuddyrestservice.repository.business.StudentRepository;
 import au.edu.tafesa.spsbuddyrestservice.repository.user.AppUserRepository;
 import au.edu.tafesa.spsbuddyrestservice.repository.user.AuthorizationTokenRepository;
-import java.time.ZonedDateTime;
-import java.time.temporal.ChronoUnit;
-import java.util.Optional;
-import java.util.UUID;
 import lombok.NonNull;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
+
+import java.time.ZonedDateTime;
+import java.time.temporal.ChronoUnit;
+import java.util.Optional;
+import java.util.UUID;
 
 /**
  * Handles application users data.
@@ -47,24 +50,28 @@ import org.springframework.stereotype.Service;
 @Service
 public class UserServiceImpl implements UserService {
 
-    // Email domain for username validation.
+    /**
+     * Email domain for username validation.
+     */
     @Value("${app.user.email.domain}")
     private String userEmailDomain;
 
+    private final AppUserRepository appUserRepository;
+    private final AuthorizationTokenRepository authorizationTokenRepository;
+    private final StudentRepository studentRepository;
+    private final LecturerRepository lecturerRepository;
+    private final JwsUtility jwsUtility;
+
     @Autowired
-    private AppUserRepository appUserRepository;
-    
-    @Autowired
-    private AuthorizationTokenRepository authorizationTokenRepository;
-    
-    @Autowired
-    private StudentRepository studentRepository;
-    
-    @Autowired
-    private LecturerRepository lecturerRepository;
-    
-    @Autowired
-    private JwsUtility jwsUtility;
+    public UserServiceImpl(
+            AppUserRepository appUserRepository, AuthorizationTokenRepository authorizationTokenRepository,
+            StudentRepository studentRepository, LecturerRepository lecturerRepository, JwsUtility jwsUtility) {
+        this.appUserRepository = appUserRepository;
+        this.authorizationTokenRepository = authorizationTokenRepository;
+        this.studentRepository = studentRepository;
+        this.lecturerRepository = lecturerRepository;
+        this.jwsUtility = jwsUtility;
+    }
 
     /**
      * Retrieves UserDetails. Searches user by school email.
@@ -86,7 +93,7 @@ public class UserServiceImpl implements UserService {
         }
 
         // Gets user by user email or throws exception.
-        final AppUser user = appUserRepository.findByEmail(userEmail)
+        final AppUser user = appUserRepository.findByEmailIgnoreCase(userEmail)
                 .orElseThrow(() -> {
                     final String error = "No user with '" + userEmail + "' email in AppUser table";
                     log.debug(error);
@@ -143,13 +150,13 @@ public class UserServiceImpl implements UserService {
         switch (userRole) {
             case ROLE_STUDENT:
                 // Obtains student's id.
-                return studentRepository.findByEmailAddressIs(userEmail)
-                        .map(studentIDProjection -> studentIDProjection.getStudentID());
+                return studentRepository.findByEmailAddressIsIgnoreCase(userEmail)
+                        .map(StudentIDProjection::getStudentID);
                 
             case ROLE_LECTURER:
                 // Obtains lecturer's id.
-                return lecturerRepository.findByEmailAddressIs(userEmail)
-                        .map(lecturerIDProjection -> lecturerIDProjection.getLecturerID());
+                return lecturerRepository.findByEmailAddressIsIgnoreCase(userEmail)
+                        .map(LecturerIDProjection::getLecturerID);
                 
             default:
                 // Returns empty optional if role unknown.
@@ -197,7 +204,7 @@ public class UserServiceImpl implements UserService {
                     forUser.setAuthToken(null);
                 },
                 () -> {
-                    final String error = "Attempt to delete non-existent token";
+                    final String error = "Tries to delete non-existent token";
                     log.error(error);
                     throw new RuntimeException(error);
                 });

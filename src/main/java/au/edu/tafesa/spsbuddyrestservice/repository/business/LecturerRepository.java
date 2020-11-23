@@ -17,22 +17,24 @@ package au.edu.tafesa.spsbuddyrestservice.repository.business;
 
 import au.edu.tafesa.spsbuddyrestservice.entity.business.Lecturer;
 import au.edu.tafesa.spsbuddyrestservice.entity.business.projection.LecturerIDProjection;
+import org.springframework.data.repository.CrudRepository;
+
 import java.util.Optional;
-import org.springframework.data.repository.Repository;
 
 /**
  * Manages Lecturer entity.
  * 
  * @author Fedor Gabrus
  */
-public interface LecturerRepository extends Repository<Lecturer, String> {
+public interface LecturerRepository extends CrudRepository<Lecturer, String> {
     
     /**
      * Retrieves lecturer's ID by email.
+     * Ignores case.
      * 
      * @param lecturerEmail email to search
      * @return lecturer's ID
      */
-    Optional<LecturerIDProjection> findByEmailAddressIs(String lecturerEmail);
+    Optional<LecturerIDProjection> findByEmailAddressIsIgnoreCase(String lecturerEmail);
     
 }

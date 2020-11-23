@@ -15,11 +15,12 @@
  */
 package au.edu.tafesa.spsbuddyrestservice.config;
 
-import java.time.ZoneId;
-import java.util.TimeZone;
-import javax.annotation.PostConstruct;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Configuration;
+
+import javax.annotation.PostConstruct;
+import java.time.ZoneId;
+import java.util.TimeZone;
 
 /**
  * Configures default application time zone.

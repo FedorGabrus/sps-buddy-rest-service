@@ -15,17 +15,15 @@
  */
 package au.edu.tafesa.spsbuddyrestservice.entity.business;
 
-import java.io.Serializable;
-import java.util.Objects;
-import javax.persistence.Basic;
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.Id;
-import javax.persistence.Table;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.ToString;
+
+import javax.persistence.*;
+import java.io.Serializable;
+import java.util.List;
+import java.util.Objects;
 
 /**
  * Represents qualification table.
@@ -74,6 +72,22 @@ public class Qualification implements Serializable {
     @Basic(optional = false)
     @Column(name = "ReqListedElectedUnits")
     private int reqListedElectedUnits;
+
+    @OneToMany(
+            cascade = {CascadeType.DETACH, CascadeType.MERGE, CascadeType.PERSIST, CascadeType.REFRESH},
+            fetch = FetchType.LAZY,
+            mappedBy = "qualification"
+    )
+    @ToString.Exclude
+    private List<CompetencyQualification> competencyQualifications;
+
+    @OneToMany(
+            cascade = {CascadeType.DETACH, CascadeType.MERGE, CascadeType.PERSIST, CascadeType.REFRESH},
+            fetch = FetchType.LAZY,
+            mappedBy = "qualification"
+    )
+    @ToString.Exclude
+    private List<SubjectQualification> subjectQualifications;
 
     @Override
     public int hashCode() {

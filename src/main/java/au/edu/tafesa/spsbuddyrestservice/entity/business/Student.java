@@ -15,18 +15,16 @@
  */
 package au.edu.tafesa.spsbuddyrestservice.entity.business;
 
-import java.io.Serializable;
-import java.util.Objects;
-import javax.persistence.Basic;
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.Id;
-import javax.persistence.Table;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.ToString;
 import org.hibernate.annotations.NaturalId;
+
+import javax.persistence.*;
+import java.io.Serializable;
+import java.util.List;
+import java.util.Objects;
 
 /**
  * Represents student table.
@@ -61,6 +59,14 @@ public class Student implements Serializable {
     @NaturalId
     private String emailAddress;
 
+    @OneToMany(
+            cascade = {CascadeType.DETACH, CascadeType.MERGE, CascadeType.PERSIST, CascadeType.REFRESH},
+            fetch = FetchType.LAZY,
+            mappedBy = "student"
+    )
+    @ToString.Exclude
+    private List<StudentStudyPlan> studentQualifications;
+
     @Override
     public int hashCode() {
         int hash = 3;
@@ -80,10 +86,7 @@ public class Student implements Serializable {
             return false;
         }
         final Student other = (Student) obj;
-        if (!Objects.equals(this.studentID, other.studentID)) {
-            return false;
-        }
-        return true;
+        return Objects.equals(this.studentID, other.studentID);
     }
     
 }

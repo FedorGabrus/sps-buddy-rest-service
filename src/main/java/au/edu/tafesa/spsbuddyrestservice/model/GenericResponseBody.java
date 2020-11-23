@@ -15,9 +15,10 @@
  */
 package au.edu.tafesa.spsbuddyrestservice.model;
 
-import java.io.Serializable;
 import lombok.Data;
 import lombok.NonNull;
+
+import java.io.Serializable;
 
 /**
  * Represents generic response data.
@@ -28,11 +29,6 @@ import lombok.NonNull;
 public class GenericResponseBody implements Serializable {
     
     private static final long serialVersionUID = 1L;
-    
-    @NonNull
-    private final String timestamp;
-    
-    private final int status;
     
     @NonNull
     private final String message;

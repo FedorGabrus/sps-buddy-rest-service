@@ -23,11 +23,11 @@ import org.springframework.web.bind.annotation.ResponseStatus;
  * 
  * @author Fedor Gabrus
  */
-@ResponseStatus(value = HttpStatus.INTERNAL_SERVER_ERROR, reason = "Inconsistent data")
+@ResponseStatus(value = HttpStatus.INTERNAL_SERVER_ERROR)
 public class InconsistentDataException extends RuntimeException {
-    
-    public InconsistentDataException(String message) {
-        super(message);
+
+    public InconsistentDataException(String reason) {
+        super(reason);
     }
-    
+
 }

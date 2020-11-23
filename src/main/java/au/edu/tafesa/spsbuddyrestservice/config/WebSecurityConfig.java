@@ -15,20 +15,21 @@
  */
 package au.edu.tafesa.spsbuddyrestservice.config;
 
-import au.edu.tafesa.spsbuddyrestservice.component.JwtAuthorizationFilter;
-import au.edu.tafesa.spsbuddyrestservice.component.JwtAuthorizationExceptionFilter;
+import au.edu.tafesa.spsbuddyrestservice.component.filter.JwtAuthorizationExceptionFilter;
+import au.edu.tafesa.spsbuddyrestservice.component.filter.JwtAuthorizationFilter;
+import au.edu.tafesa.spsbuddyrestservice.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
+import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.config.http.SessionCreationPolicy;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
-import au.edu.tafesa.spsbuddyrestservice.service.UserService;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
 /**
  * Spring security configuration.
@@ -37,17 +38,21 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
  * @author Fedor Gabrus
  */
 @EnableWebSecurity
+@EnableGlobalMethodSecurity(securedEnabled = true)
 public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
     
+    private final UserService appUserService;
+    private final JwtAuthorizationFilter jwtAuthorizationFilter;
+    private final JwtAuthorizationExceptionFilter jwtAuthorizationExceptionFilter;
+
     @Autowired
-    private UserService appUserService;
-    
-    @Autowired
-    private JwtAuthorizationFilter jwtAuthorizationFilter;
-    
-    @Autowired
-    private JwtAuthorizationExceptionFilter jwtAuthorizationExceptionFilter;
-    
+    public WebSecurityConfig(UserService appUserService, JwtAuthorizationFilter jwtAuthorizationFilter,
+                             JwtAuthorizationExceptionFilter jwtAuthorizationExceptionFilter) {
+        this.appUserService = appUserService;
+        this.jwtAuthorizationFilter = jwtAuthorizationFilter;
+        this.jwtAuthorizationExceptionFilter = jwtAuthorizationExceptionFilter;
+    }
+
     /**
      * Configures authentication manager builder.
      * 

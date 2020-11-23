@@ -16,20 +16,14 @@
 package au.edu.tafesa.spsbuddyrestservice.entity.business;
 
 import au.edu.tafesa.spsbuddyrestservice.entity.business.pk.CompetencyQualificationPK;
-import java.io.Serializable;
-import java.util.Objects;
-import javax.persistence.CascadeType;
-import javax.persistence.EmbeddedId;
-import javax.persistence.Entity;
-import javax.persistence.FetchType;
-import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
-import javax.persistence.MapsId;
-import javax.persistence.Table;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.ToString;
+
+import javax.persistence.*;
+import java.io.Serializable;
+import java.util.Objects;
 
 /**
  * Represents competency_qualification table.
@@ -54,6 +48,7 @@ public class CompetencyQualification implements Serializable {
             cascade = {CascadeType.DETACH, CascadeType.MERGE, CascadeType.PERSIST, CascadeType.REFRESH},
             optional = false)
     @MapsId("qualCode")
+    @JoinColumn(name = "QualCode")
     @ToString.Exclude
     private Qualification qualification;
     
@@ -62,6 +57,7 @@ public class CompetencyQualification implements Serializable {
             cascade = {CascadeType.DETACH, CascadeType.MERGE, CascadeType.PERSIST, CascadeType.REFRESH},
             optional = false)
     @MapsId("nationalCompCode")
+    @JoinColumn(name = "NationalCompCode", referencedColumnName = "NationalCompCode")
     @ToString.Exclude
     private Competency competency;
     
