@@ -18,6 +18,7 @@ package au.edu.tafesa.spsbuddyrestservice.service;
 
 import au.edu.tafesa.spsbuddyrestservice.component.modelassembler.CompetencyForQualificationModelAssembler;
 import au.edu.tafesa.spsbuddyrestservice.component.modelassembler.QualificationModelAssembler;
+import au.edu.tafesa.spsbuddyrestservice.component.modelassembler.StudyPlanInfoModelAssembler;
 import au.edu.tafesa.spsbuddyrestservice.component.modelassembler.SubjectForQualificationModelAssembler;
 import au.edu.tafesa.spsbuddyrestservice.entity.business.pk.CompetencyQualificationPK;
 import au.edu.tafesa.spsbuddyrestservice.entity.business.pk.SubjectQualificationPK;
@@ -26,11 +27,9 @@ import au.edu.tafesa.spsbuddyrestservice.exception.QualificationNotFoundExceptio
 import au.edu.tafesa.spsbuddyrestservice.exception.SubjectNotFoundException;
 import au.edu.tafesa.spsbuddyrestservice.model.CompetencyForQualification;
 import au.edu.tafesa.spsbuddyrestservice.model.QualificationDTO;
+import au.edu.tafesa.spsbuddyrestservice.model.StudyPlanInfo;
 import au.edu.tafesa.spsbuddyrestservice.model.SubjectForQualification;
-import au.edu.tafesa.spsbuddyrestservice.repository.business.CompetencyQualificationRepository;
-import au.edu.tafesa.spsbuddyrestservice.repository.business.CompetencyRepository;
-import au.edu.tafesa.spsbuddyrestservice.repository.business.QualificationRepository;
-import au.edu.tafesa.spsbuddyrestservice.repository.business.SubjectQualificationRepository;
+import au.edu.tafesa.spsbuddyrestservice.repository.business.*;
 import lombok.NonNull;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -55,6 +54,8 @@ public class QualificationServiceImpl implements QualificationService {
     private final CompetencyQualificationRepository competencyQualificationRepository;
     private final SubjectForQualificationModelAssembler subjectForQualificationModelAssembler;
     private final SubjectQualificationRepository subjectQualificationRepository;
+    private final StudyPlanQualificationRepository studyPlanQualificationRepository;
+    private final StudyPlanInfoModelAssembler studyPlanInfoModelAssembler;
 
     @Autowired
     public QualificationServiceImpl(QualificationRepository qualificationRepository,
@@ -63,7 +64,9 @@ public class QualificationServiceImpl implements QualificationService {
                                     CompetencyRepository competencyRepository,
                                     CompetencyQualificationRepository competencyQualificationRepository,
                                     SubjectForQualificationModelAssembler subjectForQualificationModelAssembler,
-                                    SubjectQualificationRepository subjectQualificationRepository) {
+                                    SubjectQualificationRepository subjectQualificationRepository,
+                                    StudyPlanQualificationRepository studyPlanQualificationRepository,
+                                    StudyPlanInfoModelAssembler studyPlanInfoModelAssembler) {
         this.qualificationRepository = qualificationRepository;
         this.qualificationModelAssembler = qualificationModelAssembler;
         this.competencyForQualificationModelAssembler = competencyForQualificationModelAssembler;
@@ -71,6 +74,8 @@ public class QualificationServiceImpl implements QualificationService {
         this.competencyQualificationRepository = competencyQualificationRepository;
         this.subjectForQualificationModelAssembler = subjectForQualificationModelAssembler;
         this.subjectQualificationRepository = subjectQualificationRepository;
+        this.studyPlanQualificationRepository = studyPlanQualificationRepository;
+        this.studyPlanInfoModelAssembler = studyPlanInfoModelAssembler;
     }
 
     /**
@@ -156,7 +161,6 @@ public class QualificationServiceImpl implements QualificationService {
 
     /**
      * Retrieves a subject with qualification related data.
-     * <p>Returns 404 if no subject for qualification found</p>
      *
      * @param forQualificationCode qualification code. Not null
      * @param subjectCode          subject code. Not null
@@ -170,6 +174,18 @@ public class QualificationServiceImpl implements QualificationService {
                 subjectQualificationRepository.findById(new SubjectQualificationPK(forQualificationCode, subjectCode))
                         .orElseThrow(SubjectNotFoundException::new)
         );
+    }
+
+    /**
+     * Retrieves list of study plan infos for a particular qualification.
+     *
+     * @param forQualificationCode qualification code. Not null
+     * @return list of study plan infos for a particular qualification
+     */
+    @Override
+    public List<StudyPlanInfo> getAllStudyPlanInfos(@NonNull String forQualificationCode) {
+        return studyPlanQualificationRepository.findAllByQualificationCodeOrderByPriorityAsc(forQualificationCode)
+                .stream().map(studyPlanInfoModelAssembler::toModel).collect(Collectors.toList());
     }
 
 }

@@ -18,9 +18,11 @@ package au.edu.tafesa.spsbuddyrestservice.controller;
 
 import au.edu.tafesa.spsbuddyrestservice.exception.CompetencyNotFoundException;
 import au.edu.tafesa.spsbuddyrestservice.exception.QualificationNotFoundException;
+import au.edu.tafesa.spsbuddyrestservice.exception.StudyPlanNotFoundException;
 import au.edu.tafesa.spsbuddyrestservice.exception.SubjectNotFoundException;
 import au.edu.tafesa.spsbuddyrestservice.model.CompetencyForQualification;
 import au.edu.tafesa.spsbuddyrestservice.model.QualificationDTO;
+import au.edu.tafesa.spsbuddyrestservice.model.StudyPlanInfo;
 import au.edu.tafesa.spsbuddyrestservice.model.SubjectForQualification;
 import au.edu.tafesa.spsbuddyrestservice.service.QualificationService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -140,6 +142,18 @@ public class QualificationController {
     public SubjectForQualification getOneSubject(@PathVariable String forQualificationCode,
                                                  @PathVariable String subjectCode) {
         return qualificationService.getOneSubject(forQualificationCode, subjectCode);
+    }
+
+    @GetMapping("/{forQualificationCode}/study-plans")
+    public CollectionModel<StudyPlanInfo> getAllStudyPlansInfo(@PathVariable String forQualificationCode) {
+        final var studyPlans = qualificationService.getAllStudyPlanInfos(forQualificationCode);
+        if (studyPlans.isEmpty()) {
+            throw new StudyPlanNotFoundException();
+        }
+
+        return CollectionModel.of(studyPlans,
+                linkTo(methodOn(QualificationController.class).getAllStudyPlansInfo(forQualificationCode))
+                        .withSelfRel());
     }
 
 }

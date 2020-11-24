@@ -25,6 +25,7 @@ import org.springframework.hateoas.RepresentationModel;
 import org.springframework.hateoas.server.core.Relation;
 
 import java.io.Serializable;
+import java.util.List;
 
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
@@ -42,11 +43,13 @@ public class SubjectDTO extends RepresentationModel<SubjectDTO> implements Seria
 
     private final String subjectCode;
     private final String subjectDescription;
+    private final List<SubjectDTO> prerequisites;
 
-    public SubjectDTO(@NonNull String subjectCode, @NonNull String subjectDescription) {
+    public SubjectDTO(@NonNull String subjectCode, @NonNull String subjectDescription, List<SubjectDTO> prerequisites) {
         super(linkTo(methodOn(SubjectController.class).getOneSubject(subjectCode)).withSelfRel());
 
         this.subjectCode = subjectCode;
         this.subjectDescription = subjectDescription;
+        this.prerequisites = prerequisites;
     }
 }

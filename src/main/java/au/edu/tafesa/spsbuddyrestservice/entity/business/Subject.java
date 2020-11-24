@@ -22,6 +22,7 @@ import lombok.ToString;
 
 import javax.persistence.*;
 import java.io.Serializable;
+import java.util.List;
 import java.util.Objects;
 
 /**
@@ -47,6 +48,17 @@ public class Subject implements Serializable {
     @Basic(optional = false)
     @Column(name = "SubjectDescription")
     private String subjectDescription;
+
+    @ManyToMany(
+            cascade = CascadeType.ALL,
+            fetch = FetchType.EAGER
+    )
+    @JoinTable(
+            name = "prerequisite",
+            joinColumns = {@JoinColumn(name = "Subject")},
+            inverseJoinColumns = {@JoinColumn(name = "Prerequisite")}
+    )
+    private List<Subject> prerequisites;
 
     @Override
     public int hashCode() {

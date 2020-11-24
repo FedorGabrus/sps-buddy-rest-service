@@ -21,6 +21,8 @@ import au.edu.tafesa.spsbuddyrestservice.model.SubjectDTO;
 import lombok.NonNull;
 import org.springframework.stereotype.Component;
 
+import java.util.stream.Collectors;
+
 /**
  * Provides helper methods to convert Subject entity into representation model.
  */
@@ -29,11 +31,12 @@ public class SubjectModelAssemblerImpl implements SubjectModelAssembler {
 
     /**
      * Converts subject entity into representation model
-     * @param subject subject entity. Not null
+     * @param subject subject entity
      * @return subject representation model
      */
     @Override
     public SubjectDTO toModel(@NonNull Subject subject) {
-        return new SubjectDTO(subject.getSubjectCode(), subject.getSubjectDescription());
+        return new SubjectDTO(subject.getSubjectCode(), subject.getSubjectDescription(),
+                subject.getPrerequisites().stream().map(this::toModel).collect(Collectors.toList())) ;
     }
 }

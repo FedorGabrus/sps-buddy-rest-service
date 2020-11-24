@@ -62,7 +62,9 @@ public class QualificationDTO extends RepresentationModel<QualificationDTO> impl
                 linkTo(methodOn(QualificationController.class).getAllCompetencies(qualificationCode))
                         .withRel("qualificationCompetencies"),
                 linkTo(methodOn(QualificationController.class).getAllSubjects(qualificationCode))
-                        .withRel("qualificationSubjects")
+                        .withRel("qualificationSubjects"),
+                linkTo(methodOn(QualificationController.class).getAllStudyPlansInfo(qualificationCode))
+                        .withRel("qualificationStudyPlans")
         ));
 
         this.qualificationCode = qualificationCode;

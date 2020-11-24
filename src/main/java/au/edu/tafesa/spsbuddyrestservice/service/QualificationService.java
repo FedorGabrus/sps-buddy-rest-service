@@ -21,6 +21,7 @@ import au.edu.tafesa.spsbuddyrestservice.exception.QualificationNotFoundExceptio
 import au.edu.tafesa.spsbuddyrestservice.exception.SubjectNotFoundException;
 import au.edu.tafesa.spsbuddyrestservice.model.CompetencyForQualification;
 import au.edu.tafesa.spsbuddyrestservice.model.QualificationDTO;
+import au.edu.tafesa.spsbuddyrestservice.model.StudyPlanInfo;
 import au.edu.tafesa.spsbuddyrestservice.model.SubjectForQualification;
 
 import java.util.List;
@@ -86,5 +87,13 @@ public interface QualificationService {
      * @throws SubjectNotFoundException throws when no subject found
      */
     SubjectForQualification getOneSubject(String forQualificationCode, String subjectCode) throws SubjectNotFoundException;
+
+    /**
+     * Retrieves list of study plan infos for a particular qualification.
+     *
+     * @param forQualificationCode qualification code
+     * @return list of study plan infos for a particular qualification
+     */
+    List<StudyPlanInfo> getAllStudyPlanInfos(String forQualificationCode);
 
 }

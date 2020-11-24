@@ -43,7 +43,11 @@ public class StudyPlanQualification implements Serializable {
     @Basic(optional = false)
     @Column(name = "StudyPlanCode")
     private String studyPlanCode;
-    
+
+    @Basic(optional = false)
+    @Column(name = "QualCode", insertable = false, updatable = false)
+    private String qualificationCode;
+
     @ManyToOne(
             fetch = FetchType.LAZY,
             cascade = {CascadeType.DETACH, CascadeType.MERGE, CascadeType.PERSIST, CascadeType.REFRESH},
