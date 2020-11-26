@@ -34,7 +34,7 @@ import java.io.Serializable;
 @AllArgsConstructor
 @EqualsAndHashCode
 @ToString
-public class StudyplanSubjectPK implements Serializable {
+public class StudyPlanSubjectPK implements Serializable {
     
     private static final long serialVersionUID = 1L;
 

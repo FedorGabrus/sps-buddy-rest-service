@@ -48,6 +48,7 @@ public class SubjectCompetency implements Serializable {
             cascade = {CascadeType.DETACH, CascadeType.MERGE, CascadeType.PERSIST, CascadeType.REFRESH},
             optional = false)
     @MapsId("subjectCode")
+    @JoinColumn(name = "SubjectCode")
     @ToString.Exclude
     private Subject subject;
     
@@ -56,6 +57,7 @@ public class SubjectCompetency implements Serializable {
             cascade = {CascadeType.DETACH, CascadeType.MERGE, CascadeType.PERSIST, CascadeType.REFRESH},
             optional = false)
     @MapsId("tafeCompCode")
+    @JoinColumn(name = "TafeCompCode")
     @ToString.Exclude
     private Competency competency;
 

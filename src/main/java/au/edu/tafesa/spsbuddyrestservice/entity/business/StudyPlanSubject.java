@@ -15,7 +15,7 @@
  */
 package au.edu.tafesa.spsbuddyrestservice.entity.business;
 
-import au.edu.tafesa.spsbuddyrestservice.entity.business.pk.StudyplanSubjectPK;
+import au.edu.tafesa.spsbuddyrestservice.entity.business.pk.StudyPlanSubjectPK;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -36,18 +36,23 @@ import java.util.Objects;
 @Setter
 @NoArgsConstructor
 @ToString
-public class StudyplanSubject implements Serializable {
+public class StudyPlanSubject implements Serializable {
 
     private static final long serialVersionUID = 1L;
     
     @EmbeddedId
-    private StudyplanSubjectPK studyplanSubjectPK;
+    private StudyPlanSubjectPK studyplanSubjectPK;
+
+    @Basic
+    @Column(name = "StudyPlanCode", insertable = false, updatable = false)
+    private String studyPlanCode;
     
     @ManyToOne(
             fetch = FetchType.LAZY,
             cascade = {CascadeType.DETACH, CascadeType.MERGE, CascadeType.PERSIST, CascadeType.REFRESH},
             optional = false)
     @MapsId("studyPlanCode")
+    @JoinColumn(name = "StudyPlanCode")
     @ToString.Exclude
     private StudyPlanQualification studyplanQualification;
     
@@ -56,6 +61,7 @@ public class StudyplanSubject implements Serializable {
             cascade = {CascadeType.DETACH, CascadeType.MERGE, CascadeType.PERSIST, CascadeType.REFRESH},
             optional = false)
     @MapsId("subjectCode")
+    @JoinColumn(name = "SubjectCode")
     @ToString.Exclude
     private Subject subject;
     
@@ -85,7 +91,7 @@ public class StudyplanSubject implements Serializable {
         if (getClass() != obj.getClass()) {
             return false;
         }
-        final StudyplanSubject other = (StudyplanSubject) obj;
+        final StudyPlanSubject other = (StudyPlanSubject) obj;
         return Objects.equals(this.studyplanSubjectPK, other.studyplanSubjectPK);
     }
     

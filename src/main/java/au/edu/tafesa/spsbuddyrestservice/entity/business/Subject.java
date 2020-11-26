@@ -60,6 +60,13 @@ public class Subject implements Serializable {
     )
     private List<Subject> prerequisites;
 
+    @OneToMany(
+            fetch = FetchType.LAZY,
+            cascade = {CascadeType.DETACH, CascadeType.MERGE, CascadeType.PERSIST, CascadeType.REFRESH},
+            mappedBy = "subject"
+    )
+    private List<SubjectCompetency> subjectCompetencies;
+
     @Override
     public int hashCode() {
         int hash = 7;

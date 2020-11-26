@@ -16,8 +16,12 @@
 
 package au.edu.tafesa.spsbuddyrestservice.service;
 
+import au.edu.tafesa.spsbuddyrestservice.exception.StudyPlanNotFoundException;
+import au.edu.tafesa.spsbuddyrestservice.exception.SubjectNotFoundException;
 import au.edu.tafesa.spsbuddyrestservice.model.StudyPlanInfo;
+import au.edu.tafesa.spsbuddyrestservice.model.SubjectForStudyPlan;
 
+import java.util.List;
 import java.util.Optional;
 
 /**
@@ -32,5 +36,25 @@ public interface StudyPlanService {
      * @return study plan info with a particular code
      */
     Optional<StudyPlanInfo> getOneStudyPlanInfo(String studyPlanCode);
+
+    /**
+     * Retrieves a particular subject with study plan related data.
+     *
+     * @param forStudyPlanCode study plan code
+     * @param subjectCode subject code
+     * @return particular subject with study plan related data
+     * @throws StudyPlanNotFoundException throws if no study plan with provided id
+     * @throws SubjectNotFoundException throws if the subject is not related to study plan
+     */
+    SubjectForStudyPlan getOneSubject(String forStudyPlanCode, String subjectCode)
+            throws StudyPlanNotFoundException, SubjectNotFoundException;
+
+    /**
+     * Retrieves all subjects for a particular study plan with related data.
+     * @param forStudyPlanCode study plan code
+     * @return list of subjects for a particular study plan
+     * @throws StudyPlanNotFoundException throws if no study plan with provided id
+     */
+    List<SubjectForStudyPlan> getAllSubjects(String forStudyPlanCode) throws StudyPlanNotFoundException;
 
 }

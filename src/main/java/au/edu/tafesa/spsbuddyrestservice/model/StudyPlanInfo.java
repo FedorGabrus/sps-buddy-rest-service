@@ -51,6 +51,7 @@ public class StudyPlanInfo extends RepresentationModel<StudyPlanInfo> implements
     public StudyPlanInfo(@NonNull String studyPlanCode, @NonNull String qualificationCode, int priority) {
         super(Arrays.asList(
                 linkTo(methodOn(StudyPlanController.class).getOneStudyPlanInfo(studyPlanCode)).withSelfRel(),
+                linkTo(methodOn(StudyPlanController.class).getAllSubjects(studyPlanCode)).withRel("studyPlanSubjects"),
                 linkTo(methodOn(QualificationController.class).getOneQualification(qualificationCode))
                         .withRel("qualification")
         ));
