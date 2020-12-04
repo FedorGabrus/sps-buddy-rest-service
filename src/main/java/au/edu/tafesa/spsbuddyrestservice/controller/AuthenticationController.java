@@ -65,8 +65,7 @@ public class AuthenticationController {
      * @return EntityModel with LogInResponse
      */
     @PostMapping("/login")
-    public EntityModel<LogInResponse> logIn(
-            @Valid @RequestBody LogInForm requestBody) {
+    public EntityModel<LogInResponse> logIn(@Valid @RequestBody LogInForm requestBody) {
         try {
             // Authenticate user with received credentials. Throws AuthenticationException in case of bad credentials.
             final Authentication authorisedUser = authenticationManagerBean.authenticate(
