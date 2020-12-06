@@ -1,0 +1,15 @@
+au.edu.tafesa.spsbuddyrestservice
+au.edu.tafesa.spsbuddyrestservice.component
+au.edu.tafesa.spsbuddyrestservice.component.filter
+au.edu.tafesa.spsbuddyrestservice.component.modelassembler
+au.edu.tafesa.spsbuddyrestservice.config
+au.edu.tafesa.spsbuddyrestservice.controller
+au.edu.tafesa.spsbuddyrestservice.entity.business
+au.edu.tafesa.spsbuddyrestservice.entity.business.pk
+au.edu.tafesa.spsbuddyrestservice.entity.business.projection
+au.edu.tafesa.spsbuddyrestservice.entity.user
+au.edu.tafesa.spsbuddyrestservice.exception
+au.edu.tafesa.spsbuddyrestservice.model
+au.edu.tafesa.spsbuddyrestservice.repository.business
+au.edu.tafesa.spsbuddyrestservice.repository.user
+au.edu.tafesa.spsbuddyrestservice.service
